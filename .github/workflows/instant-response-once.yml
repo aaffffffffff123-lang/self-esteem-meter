@@ -1,0 +1,58 @@
+name: Prepare instant responses (one time)
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/instant-response-once.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Prepare exact index blob
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, os, urllib.request
+          repo = 'aaffffffffff123-lang/self-esteem-meter'
+          def api(path, data=None):
+              request = urllib.request.Request(
+                  'https://api.github.com/repos/' + repo + path,
+                  data=None if data is None else json.dumps(data).encode(),
+                  headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json', 'X-GitHub-Api-Version': '2022-11-28'})
+              with urllib.request.urlopen(request, timeout=60) as response:
+                  return json.load(response)
+          original = base64.b64decode(api('/git/blobs/4f70488cfc9b164cc1032a30fcb624cb9a089cf9')['content'])
+          assert hashlib.sha1(b'blob ' + str(len(original)).encode() + b'\0' + original).hexdigest() == '4f70488cfc9b164cc1032a30fcb624cb9a089cf9'
+          s = original.decode('utf-8')
+          changes = [
+              ('// big:1 = 뜸 들였다가 툭 던지는 짧은 한마디 (글자는 다른 말풍선과 똑같이)', '// big:1 = 짧은 한마디 (다른 말풍선과 똑같이 즉시 표시)'),
+              ('    endGroup(); await wait(380);\n    const el = notifyEl(msg);', '    endGroup();\n    const el = notifyEl(msg);'),
+              ("    await emphasize(el, { t: msg.lines.join(' ') });\n    await wait(700); return;", "    emphasize(el, { t: msg.lines.join(' ') });\n    return;"),
+              ('    endGroup(); await wait(260);\n    log.append(badgeEl(msg));', '    endGroup();\n    log.append(badgeEl(msg));'),
+              ('    await wait(900); return;', '    return;'),
+              ("  const len = plain(msg.t).length;\n  await typing(msg.k === 'aside' ? 420 : msg.big ? 1150 : Math.min(1450, 430 + len * 15));\n", ''),
+              ('  await emphasize(el, msg);\n  await wait(300);', '  emphasize(el, msg);'),
+              ("  if (ch >= 0) { divider(ch + 1, CHAPTERS[ch].title); SFX.play('chapter'); await wait(420); }", "  if (ch >= 0) { divider(ch + 1, CHAPTERS[ch].title); SFX.play('chapter'); }"),
+              ('  await typing(380);\n', ''),
+              ("  await wait(120);\n  dockWait();\n  meSay(c.l); SFX.play('send');\n  await wait(300);", "  dockWait();\n  meSay(c.l); SFX.play('send');"),
+              ("    await wait(100); dockWait();\n    if (echo) { meSay(label, 'meek'); SFX.play('soft'); await wait(260); }", "    dockWait();\n    if (echo) { meSay(label, 'meek'); SFX.play('soft'); }"),
+              ("    await wait(300);\n    await say({ t: '기록했어요.", "    await say({ t: '기록했어요."),
+              ('    endGroup(); await wait(300);\n    const el = notifyEl({ app: true', '    endGroup();\n    const el = notifyEl({ app: true'),
+              ("    await wait(600);\n    await new Promise(res => go('마셨어요', res));", "    await new Promise(res => go('마셨어요', res));"),
+              ("    SFX.play('water');\n    await wait(200);", "    SFX.play('water');"),
+              ('    await wait(320);\n    if (chosen.length)', '    if (chosen.length)'),
+              ('      scrollEnd(); await wait(650);', '      scrollEnd();'),
+          ]
+          for before, after in changes:
+              assert s.count(before) == 1, repr(before)
+              s = s.replace(before, after)
+          encoded = s.encode('utf-8')
+          expected = '67e677b5731b019270af10ce804cd7bbda27268a'
+          assert hashlib.sha1(b'blob ' + str(len(encoded)).encode() + b'\0' + encoded).hexdigest() == expected
+          result = api('/git/blobs', {'content': s, 'encoding': 'utf-8'})
+          assert result['sha'] == expected
+          print('Prepared index blob:', result['sha'])
+          PY
