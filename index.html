@@ -643,6 +643,52 @@ mark.em-h {
 }
 @keyframes toast { 0% { opacity: 0; transform: translate(-50%, 16px); } 12%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, 8px); } }
 
+
+/* 화면에 숨어 있는 오락실 얼굴 */
+.arcade-face {
+  width: 44px; height: 44px; flex: none;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  text-decoration: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  opacity: .86;
+  z-index: 8;
+}
+.arcade-face svg {
+  width: 38px; height: 38px;
+  overflow: visible;
+  transform: rotate(-6deg);
+  transform-origin: 50% 50%;
+  filter: drop-shadow(0 3px 0 rgba(122,53,94,.13)) drop-shadow(0 7px 12px rgba(184,71,123,.16));
+  transition: transform .12s ease, filter .12s ease, opacity .12s ease;
+}
+.arcade-face:active svg {
+  transform: rotate(-6deg) scale(.82, .88);
+  filter: drop-shadow(0 1px 0 rgba(122,53,94,.13));
+}
+.arcade-face:focus-visible { outline: 3px solid var(--lilac); outline-offset: 1px; }
+.welcome .appbar { justify-content: space-between; }
+.chat-head { position: relative; }
+.arcade-face--chat {
+  position: absolute;
+  left: 50%;
+  top: calc(11px + env(safe-area-inset-top, 0px));
+  width: 42px; height: 42px;
+  transform: translateX(-50%);
+}
+.arcade-face--chat svg { width: 31px; height: 31px; }
+.arcade-face--outro {
+  position: absolute;
+  left: 14px;
+  bottom: calc(11px + env(safe-area-inset-bottom, 0px));
+}
+.result-scroll { padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
+@media (hover: hover) {
+  .arcade-face:hover { opacity: 1; }
+  .arcade-face:hover svg { transform: rotate(-9deg) translateY(-1px); }
+}
+
 @media (max-height: 640px) {
   .brand-big .wm { font-size: 32px; }
   .brand-big img { width: 48px; height: 48px; }
@@ -669,7 +715,19 @@ mark.em-h {
   </section>
 
   <section class="screen welcome" id="welcome" hidden aria-label="시작">
-    <header class="appbar"><button class="icon-btn sound-btn" type="button"></button></header>
+    <header class="appbar">
+      <a class="arcade-face arcade-face--intro" href="https://aaffffffffff123-lang.github.io/arcade/" target="_blank" rel="noopener noreferrer" aria-label="다른 게임 보기">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M24 3.2C30 3.3 36.8 5.8 40.5 10.5C44 14.9 45.7 22.5 44.5 28.5C43.2 34.7 38.7 39.6 33 42.3C27.4 45 20.9 45.8 15.1 43.2C9.2 40.6 5.1 36.6 3.8 30.5C2.5 24.5 3.4 17.4 7.5 12C11.6 6.7 17.9 3.1 24 3.2Z" fill="#FF5F91" stroke="#7A355E" stroke-width="1.5"/>
+            <path d="M12.9 9.5v8.1M20 7.2v9.5M27.4 6.4v10.1M35 9v9" fill="none" stroke="#FFF6F9" stroke-width="2.25" stroke-linecap="round"/>
+            <ellipse cx="18.1" cy="24.7" rx="2.15" ry="2.5" fill="#FFF6F9"/>
+            <ellipse cx="29.9" cy="25.5" rx="2.15" ry="2.5" fill="#FFF6F9"/>
+            <path d="M19.5 32.1Q24.2 36.2 29 31.7" fill="none" stroke="#FFF6F9" stroke-width="2.35" stroke-linecap="round"/>
+            <path d="M8.8 18.2Q11.2 9.7 18.7 6.6" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" opacity=".28"/>
+          </svg>
+      </a>
+      <button class="icon-btn sound-btn" type="button"></button>
+    </header>
     <div class="brand-big"><img alt="" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22fg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23FF8AB2%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23FF4A7D%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22ft%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23FFFFFF%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23D6E1EC%22%2F%3E%3C%2FlinearGradient%3E%3CradialGradient%20id%3D%22fb%22%20cx%3D%22.35%22%20cy%3D%22.3%22%20r%3D%22.8%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23FF97A4%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23C8163A%22%2F%3E%3C%2FradialGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22url%28%23fg%29%22%2F%3E%3Cg%20transform%3D%22rotate%2830%2032%2034%29%22%3E%3Crect%20x%3D%2226.5%22%20y%3D%2215%22%20width%3D%2211%22%20height%3D%2236%22%20rx%3D%225.5%22%20fill%3D%22url%28%23ft%29%22%2F%3E%3Crect%20x%3D%2230.3%22%20y%3D%2230%22%20width%3D%223.4%22%20height%3D%2220%22%20rx%3D%221.7%22%20fill%3D%22%23E8304B%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2250.5%22%20r%3D%228%22%20fill%3D%22url%28%23ft%29%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2250.5%22%20r%3D%226.3%22%20fill%3D%22url%28%23fb%29%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2248.5%22%20r%3D%221.8%22%20fill%3D%22%23fff%22%20opacity%3D%22.85%22%2F%3E%3Ccircle%20cx%3D%2227.4%22%20cy%3D%2216%22%20r%3D%225.6%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2236.6%22%20cy%3D%2216%22%20r%3D%225.6%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2228%22%20cy%3D%2216.8%22%20r%3D%222.6%22%20fill%3D%22%232A1F3D%22%2F%3E%3Ccircle%20cx%3D%2237.2%22%20cy%3D%2216.8%22%20r%3D%222.6%22%20fill%3D%22%232A1F3D%22%2F%3E%3Cpath%20d%3D%22M22.5%209.5%20Q27%207%2031%209%20M33%209%20Q37%207%2041.5%209.5%22%20fill%3D%22none%22%20stroke%3D%22%233B2A55%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"><div class="wm">에스팀랩</div><div class="en">Esteem Lab</div></div>
     <div class="welcome-stage" id="welcome-stage"></div>
     <div class="welcome-bottom">
@@ -691,6 +749,16 @@ mark.em-h {
   <section class="screen chat" id="chat" hidden aria-label="측정">
     <header class="appbar chat-head">
       <div class="coach"><div class="avatar" id="head-avatar"></div><div><div class="coach-name">온이</div><div class="coach-sub">마음 코치</div></div></div>
+      <a class="arcade-face arcade-face--chat" href="https://aaffffffffff123-lang.github.io/arcade/" target="_blank" rel="noopener noreferrer" aria-label="다른 게임 보기">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M24 3.2C30 3.3 36.8 5.8 40.5 10.5C44 14.9 45.7 22.5 44.5 28.5C43.2 34.7 38.7 39.6 33 42.3C27.4 45 20.9 45.8 15.1 43.2C9.2 40.6 5.1 36.6 3.8 30.5C2.5 24.5 3.4 17.4 7.5 12C11.6 6.7 17.9 3.1 24 3.2Z" fill="#FF5F91" stroke="#7A355E" stroke-width="1.5"/>
+            <path d="M12.9 9.5v8.1M20 7.2v9.5M27.4 6.4v10.1M35 9v9" fill="none" stroke="#FFF6F9" stroke-width="2.25" stroke-linecap="round"/>
+            <ellipse cx="18.1" cy="24.7" rx="2.15" ry="2.5" fill="#FFF6F9"/>
+            <ellipse cx="29.9" cy="25.5" rx="2.15" ry="2.5" fill="#FFF6F9"/>
+            <path d="M19.5 32.1Q24.2 36.2 29 31.7" fill="none" stroke="#FFF6F9" stroke-width="2.35" stroke-linecap="round"/>
+            <path d="M8.8 18.2Q11.2 9.7 18.7 6.6" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" opacity=".28"/>
+          </svg>
+      </a>
       <div class="spacer"></div>
       <span class="step-pill" id="step">1<small> / 33</small></span>
       <button class="icon-btn sound-btn" type="button"></button>
@@ -713,6 +781,16 @@ mark.em-h {
       <button class="icon-btn sound-btn" type="button"></button>
     </header>
     <div class="result-scroll" id="result-scroll"></div>
+    <a class="arcade-face arcade-face--outro" href="https://aaffffffffff123-lang.github.io/arcade/" target="_blank" rel="noopener noreferrer" aria-label="다른 게임 보기">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M24 3.2C30 3.3 36.8 5.8 40.5 10.5C44 14.9 45.7 22.5 44.5 28.5C43.2 34.7 38.7 39.6 33 42.3C27.4 45 20.9 45.8 15.1 43.2C9.2 40.6 5.1 36.6 3.8 30.5C2.5 24.5 3.4 17.4 7.5 12C11.6 6.7 17.9 3.1 24 3.2Z" fill="#FF5F91" stroke="#7A355E" stroke-width="1.5"/>
+            <path d="M12.9 9.5v8.1M20 7.2v9.5M27.4 6.4v10.1M35 9v9" fill="none" stroke="#FFF6F9" stroke-width="2.25" stroke-linecap="round"/>
+            <ellipse cx="18.1" cy="24.7" rx="2.15" ry="2.5" fill="#FFF6F9"/>
+            <ellipse cx="29.9" cy="25.5" rx="2.15" ry="2.5" fill="#FFF6F9"/>
+            <path d="M19.5 32.1Q24.2 36.2 29 31.7" fill="none" stroke="#FFF6F9" stroke-width="2.35" stroke-linecap="round"/>
+            <path d="M8.8 18.2Q11.2 9.7 18.7 6.6" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" opacity=".28"/>
+          </svg>
+      </a>
   </section>
 
 </div>
