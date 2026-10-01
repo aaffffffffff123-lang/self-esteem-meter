@@ -1135,7 +1135,7 @@ function faviconSVG() {
 
 // ===== 문항·대사 =====
 // 서식 표기: [w:손글씨]
-// big:1 = 짧은 한마디 (다른 말풍선과 똑같이 즉시 표시)
+// big:1 = 뜸 들였다가 툭 던지는 짧은 한마디 (글자는 다른 말풍선과 똑같이)
 // 말풍선 종류: 문자열 = 온이 말풍선 / {big:1} 크게 튀어나오는 한 방 / {k:'badge'} 배지 획득 / {k:'aside'} 괄호 속 혼잣말 / {sing:1} 노래
 // f = 온이 표정: smile happy deadpan flat sly smug sparkle curious yuck sweat sympathy sad
 const Q = [
@@ -1676,23 +1676,26 @@ async function say(raw, defFace) {
     return;
   }
   if (msg.k === 'notify') {
-    endGroup();
+    endGroup(); await wait(380);
     const el = notifyEl(msg); log.append(el); scrollEnd(); SFX.play('notify'); buzz(12);
-    emphasize(el, { t: msg.lines.join(' ') });
-    return;
+    await emphasize(el, { t: msg.lines.join(' ') });
+    await wait(700); return;
   }
   if (msg.k === 'badge') {
-    endGroup();
+    endGroup(); await wait(260);
     log.append(badgeEl(msg)); scrollEnd(); SFX.play('badge'); confetti(); buzz(30);
-    return;
+    await wait(900); return;
   }
   const face = msg.f || defFace || 'smile';
   if (!group) oniGroup(face); else setFace(face);
+  const len = plain(msg.t).length;
+  await typing(msg.k === 'aside' ? 420 : msg.big ? 1150 : Math.min(1450, 430 + len * 15));
   const el = msg.k === 'quote' ? quoteEl(msg) : bubbleEl(msg, msg.k === 'aside' ? 'aside' : '');
   if (SAY_KEY && !msg.k) el.dataset.key = SAY_KEY;
   group.stack.append(el); scrollEnd();
   SFX.play(msg.k === 'quote' ? 'quote' : 'recv');
-  emphasize(el, msg);
+  await emphasize(el, msg);
+  await wait(300);
 }
 
 function updateProgress(i) {
@@ -1703,8 +1706,9 @@ function updateProgress(i) {
 async function ask(i) {
   S.i = i; updateProgress(i);
   const ch = CHAPTERS.findIndex(c => c.from === i);
-  if (ch >= 0) { divider(ch + 1, CHAPTERS[ch].title); SFX.play('chapter'); }
+  if (ch >= 0) { divider(ch + 1, CHAPTERS[ch].title); SFX.play('chapter'); await wait(420); }
   oniGroup('smile');
+  await typing(380);
   const card = document.createElement('div'); card.className = 'q-card';
   card.innerHTML = `<div class="q-no">${IC.heart}${String(i + 1).padStart(2, '0')}</div><p></p>`;
   card.querySelector('p').textContent = Q[i].t;
@@ -1726,8 +1730,10 @@ async function choose(pos, btn) {
   btn.classList.add('pressed'); SFX.play('tap');
   const i = S.i, ci = S.order[i][pos], c = Q[i].c[ci];
   S.answers[i] = ci;
+  await wait(120);
   dockWait();
   meSay(c.l); SFX.play('send');
+  await wait(300);
   for (const [mi, m] of c.m.entries()) { SAY_KEY = `${i}.${ci}.${mi}.0`; await say(m, c.f); }
   SAY_KEY = '';
   endGroup();
@@ -1749,8 +1755,8 @@ function go(label, next, { echo = true } = {}) {
   b.addEventListener('click', async () => {
     if (!dockReady() || S.busy) return;
     S.busy = true; dock.dataset.ready = '0'; b.classList.add('pressed'); SFX.play('tap');
-    dockWait();
-    if (echo) { meSay(label, 'meek'); SFX.play('soft'); }
+    await wait(100); dockWait();
+    if (echo) { meSay(label, 'meek'); SFX.play('soft'); await wait(260); }
     S.busy = false;
     next();
   });
@@ -1794,17 +1800,20 @@ async function breakTime(n, doneCount) {
       }));
       armDock();
     });
+    await wait(300);
     await say({ t: '기록했어요. [h:아무도 안 봐요.]', f: 'smile' });
     endGroup();
     return new Promise(res => go('다음', res));
   }
   if (n === 3) {
-    endGroup();
+    endGroup(); await wait(300);
     const el = notifyEl({ app: true, from: '에스팀랩', lines: ['수분 섭취 알림', '물 한 잔 마실 시간이에요.'] });
     el.querySelector('p').style.fontWeight = '800';
     log.append(el); scrollEnd(); SFX.play('notify');
+    await wait(600);
     await new Promise(res => go('마셨어요', res));
     SFX.play('water');
+    await wait(200);
     await say({ t: '아, 넵.', f: 'deadpan', big: 1 });
     endGroup();
     return new Promise(res => go('마지막 장 할게요', res));
@@ -2168,10 +2177,11 @@ async function helpSheet(d) {
   const prevLog = log; log = wrap.querySelector('.s-log'); endGroup();
   try {
     const chosen = GOALS.filter(g => S.goals.includes(g.k)).map(g => g.l);
+    await wait(320);
     if (chosen.length) {
       await say({ t: `${who()}이 처음에 고르신 목표를 확인했어요.`, f: 'smile' });
       group.stack.insertAdjacentHTML('beforeend', `<div class="goal-chips">${chosen.map(c => `<span>${esc(c)}</span>`).join('')}</div>`);
-      scrollEnd();
+      scrollEnd(); await wait(650);
     } else {
       await say({ t: '처음에 목표는 따로 안 고르셨네요.', f: 'smile' });
     }
