@@ -1201,15 +1201,15 @@ const Q = [
     { l: '그렇게 느끼지 않는다', s: 1, f: 'deadpan', m: ['이미 초월해서 이제 누가 지적도 안 하는 상태.'] } ] },
   { t: '나는 적어도 남들만큼은 괜찮은 사람이라고 생각한다.', c: [
     { l: '남들만큼은 괜찮다', s: 1, f: 'curious', m: ['남들이 얼마만큼 괜찮은지 측정하고 계셨나요?'] },
-    { l: '남들만큼 괜찮지는 않다', s: 0, f: 'sparkle', m: ['이상하다 근데 왜케 내심 괜찮다고 생각하는 거 같지'] } ] },
+    { l: '남들만큼 괜찮지는 않다', s: 0, f: 'sparkle', m: ['그쵸?'] } ] },
   { t: '남들 시선이 신경 쓰여서 하고 싶은 말을 못 할 때가 있다.', c: [
     { l: '하고 싶은 말을 참는다', s: 0, f: 'happy', m: ['수동공격 난사하는 사람의 사고방식'] },
     { l: '그냥 말한다', s: 1, f: 'deadpan', m: [{ big: 1, t: '하든지 말든지.' }] } ] },
   { t: '나에게는 내세울 만한 장점이 몇 가지 있다.', c: [
     { l: '몇 가지 있다', s: 1, f: 'happy', m: [{ k: 'bait-input', ask: '우와, 어떤 건지 말해줄 수 있어요?', cut: '근데 안 궁금하네요^^' }] },
-    { l: '딱히 없다', s: 0, f: 'sparkle', m: ['그래도 너 그거 잘하잖아.', '그거 뭐더라 암튼.'] } ] },
+    { l: '딱히 없다', s: 0, f: 'sparkle', m: ['그래도 너 그거 잘하잖아.', '그거 뭐더라', '암튼'] } ] },
   { t: '실수하면 그 생각이 며칠씩 머릿속을 떠나지 않는다.', c: [
-    { l: '며칠씩 생각한다', s: 0, f: 'smile', m: ['마조 성향인가요? 자존감이 마비된 듯'] },
+    { l: '며칠씩 생각한다', s: 0, f: 'smile', m: ['우리도 며칠씩 뒷담까긴 해'] },
     { l: '금방 잊는다', s: 1, f: 'smile', m: [{ big: 1, t: '남들이 대신 기억해주니깐~' }] } ] },
   { t: '처음 만나는 사람들 앞에서도 크게 주눅 들지 않는다.', c: [
     { l: '별로 주눅 들지 않는다', s: 1, f: 'smile', m: ['😊 : [w:“네? 그런 사람이 있었나요?”]'] },
@@ -1224,11 +1224,11 @@ const Q = [
     { l: '안 드는 부분이 먼저 보인다', s: 0, f: 'sparkle', m: ['오, 진짜? 그럼 마음에 드는 부분은 어딘데? 말해줘, 말해줘.', { k: 'aside', t: '(바로 단톡방 열었음)' }] },
     { l: '마음에 드는 부분이 먼저 보인다', s: 1, f: 'sparkle', m: ['ㅋㅋ 개웃기네 어디?'] } ] },
   { t: '내 생각이 틀렸을까 봐 의견 내는 것을 자주 망설인다.', c: [
-    { l: '틀릴까 봐 망설인다', s: 0, f: 'deadpan', m: ['어 틀렸으니까 다음부턴 망설이지 말고 그냥 조용~'] },
+    { l: '틀릴까 봐 망설인다', s: 0, f: 'deadpan', m: ['틀렸으니까 앞으론 망설이지 말고 그냥 조용히 있어도 될 거 같아요'] },
     { l: '일단 의견을 말한다', s: 1, f: 'smile', m: ['🙋 : [w:“저기, 저분 꼭 회의에 들어와야 되나요?”]'] } ] },
   { t: '전체적으로 나는 실패자보다 그럭저럭 잘해온 사람에 가깝다.', c: [
     { l: '그럭저럭 잘해왔다', s: 1, f: 'sparkle', m: ['누가 그래.', '아, 혼자 생각한 거라고? ㅇㅋ'] },
-    { l: '실패자에 가깝다', s: 0, f: 'sweat', m: ['진심이지? 위로받으려고 하는 소리 아니지?', '설마 이거 위로해줘야 하는 타이밍이야?'] } ] },
+    { l: '실패자에 가깝다', s: 0, f: 'sweat', m: ['위로받으려고 하는 소리 아니져?'] } ] },
   { t: '나는 존중받을 자격이 있는 사람이라고 느낀다.', c: [
     { l: '존중받을 자격이 있다', s: 1, f: 'happy', m: [{ sing: 1, t: '당신은~ 존중받기 위해 태어난 사람~' }] },
     { l: '그런 자격이 없는 것 같다', s: 0, f: 'deadpan', m: ['뭐, 사실 니가 자격이 있든 없든 안 하긴 해.'] } ] },
@@ -1247,8 +1247,6 @@ const CHAPTERS = [
   { from: 18, to: 24, title: '나라는 사람' },
   { from: 25, to: 32, title: '마지막 점검' }
 ];
-
-const MEEK = ['네…', '넵…', '알겠어요', '그렇군요', '네 뭐…', '흠…', '다음 질문이요', '계속할게요'];
 
 // ===== 결과 =====
 const RESULTS = {
@@ -1710,7 +1708,7 @@ async function ask(i) {
   oniGroup('smile');
   await typing(380);
   const card = document.createElement('div'); card.className = 'q-card';
-  card.innerHTML = `<div class="q-no">${IC.heart}${String(i + 1).padStart(2, '0')}</div><p></p>`;
+  card.innerHTML = `<div class="q-no">질문 ${i + 1}</div><p></p>`;
   card.querySelector('p').textContent = Q[i].t;
   group.stack.append(card); scrollEnd(); SFX.play('q');
   endGroup();
@@ -1737,17 +1735,15 @@ async function choose(pos, btn) {
   for (const [mi, m] of c.m.entries()) { SAY_KEY = `${i}.${ci}.${mi}.0`; await say(m, c.f); }
   SAY_KEY = '';
   endGroup();
+  const lastComment = c.m[c.m.length - 1];
+  const lastText = typeof lastComment === 'string' ? lastComment : (lastComment.t || lastComment.cut || '');
+  await wait(Math.min(2000, Math.max(750, plain(lastText).length * 35)));
   S.busy = false;
   const chEnd = CHAPTERS.findIndex(ch => ch.to === i);
   if (i === Q.length - 1) return go('결과 볼게요', finish);
-  go('네, 그렇군요.', async () => {
-    if (chEnd >= 0 && chEnd < 4) await breakTime(chEnd, i + 1);
-    ask(i + 1);
-  });
+  if (chEnd >= 0 && chEnd < 4) await breakTime(chEnd, i + 1);
+  await ask(i + 1);
 }
-
-let lastMeek = '';
-function meek() { let m; do { m = MEEK[Math.floor(Math.random() * MEEK.length)]; } while (m === lastMeek); lastMeek = m; return m; }
 
 function go(label, next, { echo = true } = {}) {
   dock.innerHTML = `<button class="choice go" type="button" data-k="go">${esc(label)}</button>`;
@@ -1827,7 +1823,9 @@ function obRender(n, dir = 1) {
   const body = $('#ob-body');
   body.classList.toggle('back', dir < 0);
   body.style.animation = 'none'; void body.offsetWidth; body.style.animation = '';
-  $('#ob-prog').innerHTML = [1, 2, 3].map(k => `<i class="${k <= n ? 'on' : ''}"></i>`).join('');
+  $('#ob-prog').querySelectorAll('i').forEach((bar, index) => {
+    bar.classList.toggle('on', index < n);
+  });
   $('#ob-skip').style.visibility = n < 3 ? 'visible' : 'hidden';
   const next = $('#ob-next');
   if (n === 1) {
@@ -1897,8 +1895,17 @@ async function start() {
   show('chat'); updateProgress(0); dockWait();
   SFX.play('chapter');
   await wait(350);
-  await say({ t: `${S.name ? S.name + '님, ' : ''}반가워요. 저는 에스팀랩 마음 코치 온이예요.`, f: 'happy' });
-  await say({ t: '두 문장 중 지금의 나와 조금이라도 가까운 쪽을 골라 주세요.', f: 'smile' });
+  const intro = [
+    { t: `${S.name ? S.name + '님, ' : ''}안녕하세요. 마음 코치 온이예요. 만나서 반가워요.`, f: 'happy' },
+    { t: '다른 사람이 나를 어떻게 보는지는 신경 쓰면서도, 정작 내가 나를 어떻게 대하고 있는지는 놓칠 때가 있어요.', f: 'smile' },
+    { t: '오늘은 몇 가지 질문을 통해 스스로를 얼마나 믿고 있는지, 어떤 순간에 자신을 작게 느끼는지 함께 살펴보려고 해요.', f: 'smile' },
+    { t: '저는 그 과정에서 질문을 드리고, 답변을 함께 살펴보면서 자신을 조금 더 잘 이해하실 수 있도록 도와드릴 거예요.', f: 'smile' },
+    { t: '잘 보이려고 애쓰실 필요는 없어요. 평소의 나와 가장 가까운 답을 편하게 골라주세요. 그럼 시작할게요.', f: 'smile' }
+  ];
+  for (const msg of intro) {
+    await say(msg);
+    await wait(Math.min(1800, Math.max(650, plain(msg.t).length * 25)));
+  }
   endGroup();
   ask(0);
 }
