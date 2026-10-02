@@ -1,0 +1,128 @@
+name: Check third care card
+on:
+  push:
+    branches: [codex/add-selflove-card-20261002]
+    paths: [.github/workflows/add-selflove-card.yml]
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add only the selflove card
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object index.html)" = "ca2da9ae030f9fa503dffa01e58d6ff5b6c42db5"
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess, json, difflib
+          p=Path('index.html');old=p.read_text();html=old
+          evidence=Path('/tmp/care-evidence');evidence.mkdir()
+          def replace_once(a,b):
+              global html
+              assert html.count(a)==1,('anchor',a[:80],html.count(a))
+              html=html.replace(a,b,1)
+          anchor='.care-read .care-art { background: #F0EBFB; }'
+          replace_once(anchor,anchor+'\n.care-love .care-art { background: #FFF0F0; }\n.care-love .care-action { color: #AB5979; }')
+          old_scene="  const scene = kind === 'grow'"
+          love_scene='''  // 기존 카드의 캐릭터를 그대로 사용하고, 팔과 눈만 자기 포옹 자세로 바꾼다.
+            const hugged = face
+              .replace(/<path d="M32 86[^>]*\/>/, '')
+              .replace(/<ellipse cx="39" cy="59"[^>]*\/><ellipse cx="59" cy="59"[^>]*\/>/, '<path d="M35 59 Q39 63 43 59 M55 59 Q59 63 63 59" fill="none" stroke="#473B4B" stroke-width="2" stroke-linecap="round"/>');
+            const scene = kind === 'love'
+              ? `<g transform="translate(10 0)">${hugged}
+                  <path d="M31 85 Q25 100 42 100 Q55 99 65 86" fill="none" stroke="#B8899E" stroke-width="13" stroke-linecap="round"/>
+                  <path d="M31 85 Q25 100 42 100 Q55 99 65 86" fill="none" stroke="#E7BFCB" stroke-width="9" stroke-linecap="round"/>
+                  <path d="M67 84 Q75 97 58 100 Q44 100 34 87" fill="none" stroke="#B8899E" stroke-width="13" stroke-linecap="round"/>
+                  <path d="M67 84 Q75 97 58 100 Q44 100 34 87" fill="none" stroke="#E7BFCB" stroke-width="9" stroke-linecap="round"/>
+                  <ellipse cx="65" cy="85" rx="4.2" ry="5.4" fill="#F3E9DB" stroke="#D9CFCA" stroke-width="1" transform="rotate(27 65 85)"/>
+                  <ellipse cx="34" cy="86" rx="4.2" ry="5.4" fill="#F3E9DB" stroke="#D9CFCA" stroke-width="1" transform="rotate(-27 34 86)"/>
+                </g>`
+              : kind === 'grow' '''.rstrip()
+          replace_once(old_scene,love_scene)
+          anchor='        <a class="care-card care-read"'
+          card='''        <a class="care-card care-love" href="https://aaffffffffff123-lang.github.io/selflove/" target="_blank" rel="noopener noreferrer" aria-label="ス스로를 사랑하기 시작하기 (새 탭)">
+                    <span class="care-art" aria-hidden="true">${careArt('love')}</span>
+                    <span class="care-copy"><strong class="care-name">스스로를 사랑하기</strong><span class="care-action">시작하기${IC.out}</span></span>
+                  </a>
+          '''.replace('ス스로','스스로')
+          replace_once(anchor,card+anchor)
+          scripts=lambda s:'\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,re.S))
+          subprocess.run(['node','--check'],input=scripts(html),text=True,check=True)
+          def original_art(s):
+              a=s.index('let careArtId = 0;');b=s.index('\nasync function helpSheet',a)
+              js=s[a:b]+"\nprocess.stdout.write(JSON.stringify([careArt('grow'),careArt('read')]));"
+              return subprocess.run(['node','-e',js],capture_output=True,text=True,check=True).stdout
+          assert original_art(old)==original_art(html),'Existing card art changed'
+          # No existing test dialogue, score, question, timing, or recommendation is modified.
+          p.write_text(html)
+          (evidence/'changes.diff').write_text(''.join(difflib.unified_diff(old.splitlines(True),html.splitlines(True),fromfile='before/index.html',tofile='after/index.html')))
+          (evidence/'checks-static.txt').write_text('JavaScript syntax passed. Original grow/read SVG output is byte-for-byte unchanged.\n')
+          PY
+      - name: Check the three cards on mobile
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --silent --prefix /tmp/care-tools playwright
+          /tmp/care-tools/node_modules/.bin/playwright install --with-deps chromium
+          python -m http.server 8766 --bind 127.0.0.1 >/tmp/care-http.log 2>&1 &
+          cat >/tmp/care-tools/check.cjs <<'JS'
+          const {chromium}=require('playwright');const assert=require('node:assert/strict');const fs=require('fs');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+            const errors=[];page.on('pageerror',e=>errors.push(e.message));
+            await page.goto('http://127.0.0.1:8766/',{waitUntil:'networkidle'});
+            await page.waitForFunction(()=>window.__MC);
+            await page.evaluate(()=>{
+              const {S,renderResult,bandOf}=window.__MC;S.name='테스트';S.goals=[];S.busy=false;
+              const d={score:45,band:bandOf(45),name:S.name,shared:false};S.result=d;renderResult(d);
+            });
+            await page.locator('#help').click();
+            await page.waitForFunction(()=>document.querySelectorAll('.care-card').length===3);
+            const titles=await page.locator('.care-name').allTextContents();
+            assert.deepEqual(titles,['나 기르기','스스로를 사랑하기','자존감 들여다보기']);
+            const links=await page.locator('.care-card').evaluateAll(a=>a.map(x=>({href:x.href,target:x.target,rel:x.rel})));
+            assert(new URL(links[0].href).pathname==='/self-cultivation/');
+            assert.equal(links[1].href,'https://aaffffffffff123-lang.github.io/selflove/');
+            assert.equal(decodeURIComponent(links[2].href),'https://aaffffffffff123-lang.github.io/hyeomgyu/#s/자존감');
+            assert(links.every(x=>x.target==='_blank'&&x.rel.includes('noopener')));
+            for(const size of [{width:320,height:640},{width:390,height:844},{width:844,height:390}]){
+              await page.setViewportSize(size);
+              const fit=await page.locator('.care-card').evaluateAll(nodes=>nodes.every(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&e.scrollWidth<=e.clientWidth+1}));
+              assert(fit,'Card overflow at '+size.width);
+              await page.locator('.care-next').scrollIntoViewIfNeeded();
+              if(size.width!==844)await page.screenshot({path:'/tmp/care-evidence/cards-'+size.width+'.png'});
+            }
+            await page.setViewportSize({width:390,height:844});
+            await page.locator('.s-foot .btn-ghost').click();
+            assert.equal(await page.locator('.sheet-wrap').count(),0);
+            await page.locator('#help').click();
+            await page.waitForFunction(()=>document.querySelectorAll('.care-card').length===3);
+            const ids=await page.locator('.care-art [id]').evaluateAll(n=>n.map(x=>x.id));assert.equal(ids.length,new Set(ids).size);
+            assert.deepEqual(errors,[]);
+            fs.writeFileSync('/tmp/care-evidence/checks.json',JSON.stringify({passed:true,titles,links,viewports:[320,390,844],reopen:true,errors},null,2));
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node /tmp/care-tools/check.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: care-card-review
+          path: /tmp/care-evidence
+          retention-days: 3
+      - name: Save checked file without temporary helpers
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm -- .github/workflows/add-selflove-card.yml
+          git add -- index.html
+          git commit -m 'Add selflove as a third next-step card while preserving existing links'
+          git push origin HEAD:refs/heads/codex/add-selflove-card-20261002
