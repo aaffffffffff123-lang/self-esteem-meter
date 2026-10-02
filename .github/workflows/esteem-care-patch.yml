@@ -1,0 +1,33 @@
+name: Prepare approved esteem care UI
+on:
+  push:
+    branches: [codex/esteem-care-20261002]
+    paths: [.esteem-care.patch]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply only the approved index.html changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object index.html)" = "669b87ac270694105b49b60487113a7c6831b3a4"
+          git apply --check .esteem-care.patch
+          git apply .esteem-care.patch
+          test "$(git hash-object index.html)" = "ca2da9ae030f9fa503dffa01e58d6ff5b6c42db5"
+          git diff --check
+          python3 - <<'PY'
+          import pathlib, re, subprocess
+          html = pathlib.Path('index.html').read_text()
+          scripts = '\n'.join(re.findall(r'<script[^>]*>(.*?)</script>', html, re.S))
+          subprocess.run(['node', '--check'], input=scripts, text=True, check=True)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- index.html
+          git commit -m 'Apply approved name screen and two next-step cards'
+          git push origin HEAD:refs/heads/codex/esteem-care-20261002
