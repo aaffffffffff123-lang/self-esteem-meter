@@ -747,7 +747,7 @@ a.btn-main svg { width: 20px; height: 20px; flex: none; }
 
 /* 다음 단계: 기존 맞춤 관리 대화 아래에만 표시 */
 .care-next { margin: 22px 0 10px; }
-.care-next-title { margin: 0 0 10px; padding: 0 2px; color: var(--sub); font-size: 14px; font-weight: 800; }
+.care-next-title { margin: 0 0 12px; padding: 0 2px; color: var(--ink); font-family: var(--f-cute); font-size: 21px; font-weight: 400; animation: rise-in .35s cubic-bezier(.2,1.2,.4,1) both; }
 .care-cards { display: grid; gap: 10px; }
 a.care-card { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 12px; border-radius: 22px; background: var(--paper); color: var(--ink); text-decoration: none; box-shadow: inset 0 0 0 1.5px #F1D6E0, 0 3px 8px rgba(92,44,88,.04); -webkit-tap-highlight-color: transparent; transition: transform .1s ease; animation: rise-in .35s cubic-bezier(.2,1.2,.4,1) both; }
 a.care-card:active { transform: scale(.985); }
@@ -1620,8 +1620,43 @@ const who = () => S.name ? `${S.name}님` : '당신';
 const whose = () => S.name ? `${S.name}님의` : '당신의';
 
 const SESSION_KEY = 'esteem-lab-progress-v1';
+const RESULT_KEY = 'esteem-lab-result-v1';
 function clearSession() {
-  try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+  try { sessionStorage.removeItem(SESSION_KEY); sessionStorage.removeItem(RESULT_KEY); } catch (e) {}
+}
+// 저장해 둔 대화를 되살릴 때, 그 안의 그림 id와 새로 그리는 그림 id가 겹치지 않게 번호를 넘겨 둠
+function adoptLog(html) {
+  log.innerHTML = html; endGroup();
+  for (const m of html.matchAll(/id="q(\d+)/g)) _o2 = Math.max(_o2, +m[1]);
+  for (const m of html.matchAll(/id="mf(\d+)/g)) _mf = Math.max(_mf, +m[1]);
+}
+// 결과 보관: 새로고침하거나 다른 앱에 다녀오다 페이지가 다시 열려도 같은 결과로 돌아옴
+function saveResult() {
+  if (!S.result || S.result.shared) return;
+  try {
+    sessionStorage.setItem(RESULT_KEY, JSON.stringify({ v: 1, name: S.name, goals: S.goals, peer: S.peer, result: S.result, log: $('#log').innerHTML }));
+  } catch (e) {}
+}
+function restoreResult() {
+  try {
+    const raw = sessionStorage.getItem(RESULT_KEY);
+    if (!raw) return false;
+    const d = JSON.parse(raw), r = d && d.result;
+    if (!d || d.v !== 1 || !r || !RESULTS[r.band] || !Number.isInteger(r.score) ||
+        !Array.isArray(r.answers) || r.answers.length !== Q.length || typeof d.log !== 'string') {
+      clearSession(); return false;
+    }
+    S.name = String(d.name || '').replace(/\s+/g, ' ').trim().slice(0, 8);
+    S.goals = Array.isArray(d.goals) ? d.goals.filter(k => GOALS.some(g => g.k === k)) : [];
+    S.peer = d.peer && Array.isArray(d.peer.answers) ? d.peer : null;
+    S.answers = r.answers.slice(); S.care = Object.assign(emptyCare(), r.care || {});
+    S.result = r; S.imgBlob = null; S.busy = false;
+    adoptLog(d.log);
+    renderResult(r, { quiet: true });
+    return true;
+  } catch (e) {
+    clearSession(); return false;
+  }
 }
 function saveSession() {
   if (!Number.isInteger(S.i) || S.i < 0 || S.i >= Q.length) return;
@@ -1653,7 +1688,7 @@ function restoreSession() {
     S.peer = d.peer && Array.isArray(d.peer.answers) ? d.peer : null;
     S.care = Object.assign(emptyCare(), d.care || {});
     S.busy = false; S.result = null; S.imgBlob = null;
-    log.innerHTML = d.log; endGroup();
+     adoptLog(d.log);
     show('chat'); updateProgress(S.i); showChoices(S.i);
     requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
     return true;
@@ -1806,7 +1841,7 @@ async function typing(ms) {
   await wait(ms); t.remove();
 }
 function dockWait() { dock.dataset.ready = '0'; dock.innerHTML = `<div class="dock-wait" aria-hidden="true"><i></i><i></i><i></i></div>`; }
-function armDock() { dock.dataset.ready = '0'; setTimeout(() => { dock.dataset.ready = '1'; }, RM.matches ? 60 : 380); }
+function armDock() { dock.dataset.ready = '0'; scrollEnd(); setTimeout(() => { dock.dataset.ready = '1'; }, RM.matches ? 60 : 380); }
 function dockReady() { return dock.dataset.ready === '1'; }
 
 // 미끼 입력: 진짜 입력창. 치기 시작하고 1초쯤 지나면(또는 보내기를 누르면) 입력을 끊고 온이가 말을 자름.
@@ -1851,7 +1886,7 @@ function divider(n, title) {
 
 async function emphasize(el, msg) {
   const f = flags(msg.t || '');
-  if (!f.size) return;
+  if (!f.size && !el.querySelector('.em-h')) return;
   await wait(360);
   el.classList.add('hit');
   if (f.has('w')) SFX.play('scribble');
@@ -1902,7 +1937,7 @@ async function say(raw, defFace) {
   if (msg.k === 'recall-praise') {
     const ci = Number.isInteger(S.answers[16]) ? S.answers[16] : 1;
     const text = ci === 1
-      ? '혹시 아까 [빈말인지 오래 생각한다]고 대답하셨나요?'
+      ? '혹시 아까 [h:빈말인지 오래 생각한다]고 대답하셨나요?'
       : '아까 칭찬은 그냥 받아들인다고 하셨죠? 주인공은 아닌데 칭찬은 본인 거고요.';
     const key = SAY_KEY; SAY_KEY = '';
     await say({ t: text, f: ci === 1 ? 'curious' : 'sly' }, defFace);
@@ -1992,7 +2027,7 @@ async function choose(pos, btn) {
     await say({ k: 'badge', name: '나에게 관심 있음' });
     S.care.badge = true; endGroup();
   }
-  if (i === 23 && !S.care.grounded) await groundingCheck();
+  if (i === 24 && !S.care.grounded) await groundingCheck();
   const chEnd = CHAPTERS.findIndex(ch => ch.to === i);
   if (i === Q.length - 1) return go('결과 볼게요', finish);
   if (chEnd >= 0 && Number.isInteger(CHAPTERS[chEnd].rest)) await breakTime(CHAPTERS[chEnd].rest, i + 1);
@@ -2056,10 +2091,11 @@ async function breakTime(n, doneCount) {
     await breathPhase(circle, label, '멈추기', 2, 1, 1);
     await breathPhase(circle, label, '내쉬기', 6, 1, .55, 'exhale');
     S.care.breathed = true;
+    label.textContent = '완료';
     card.querySelector('.b-phase').textContent = '호흡 완료';
     card.querySelector('.b-cap').textContent = '방금 12초는 꽤 제대로 쉬었어요';
     buzz(20); endGroup();
-    await say({ t: '네, [h:그 정도면 충분히 쉬셨어요.]', f: 'deadpan' });
+    await say({ t: '네, 그 정도면 충분히 쉬셨어요.', f: 'deadpan' });
     endGroup();
     return new Promise(res => go('다 쉬었어요', res));
   }
@@ -2312,6 +2348,7 @@ async function finish() {
   S.busy = false;
   clearSession();
   renderResult(S.result);
+  saveResult();
 }
 
 // ===== 결과 화면 =====
@@ -2483,7 +2520,7 @@ $('#log').addEventListener('click', e => {
   if (!$('#chat').classList.contains('review') || !S.result) return;
   const b = e.target.closest('.bubble.pickable'); if (!b) return;
   const p = painFromKey(b.dataset.key); if (!p) return;
-  S.result.pain = p; S.imgBlob = null;
+  S.result.pain = p; S.imgBlob = null; saveResult();
   $('#log').querySelectorAll('.bubble.picked').forEach(x => x.classList.remove('picked'));
   b.classList.add('picked'); SFX.play('tap'); buzz(12);
   setTimeout(() => closeReview(S.result, true), 280);
@@ -2622,7 +2659,7 @@ async function helpSheet(d) {
     </section>
     <button class="btn-main care-done" type="button"${selectedAction ? '' : ' disabled'}>정했어요</button>
     <section class="care-next" aria-labelledby="care-next-title" hidden>
-      <h2 class="care-next-title" id="care-next-title">다음 단계</h2>
+      <h2 class="care-next-title" id="care-next-title">다음 단계로 추천하는 것들</h2>
       <div class="care-cards"></div>
     </section>
     <button class="btn-ghost care-close" type="button" hidden>확인</button>`;
@@ -2932,7 +2969,7 @@ function fromURL() {
 // ===== 초기화 =====
 buildWelcome(); drawSoundButtons();
 const shared = fromURL();
-if (shared) renderResult(shared); else if (!restoreSession()) show('welcome');
+if (shared) renderResult(shared); else if (!restoreSession() && !restoreResult()) show('welcome');
 setTimeout(() => { const sp = $('#splash'); sp.classList.add('out'); setTimeout(() => { sp.hidden = true; }, 480); }, RM.matches ? 150 : 1150);
 window.__MC = { S, renderResult, makeCard, RESULTS, scoreOf, bandOf, fromURL };
 })();
