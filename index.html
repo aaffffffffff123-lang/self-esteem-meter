@@ -404,14 +404,15 @@ svg { display: block; }
   transform: scale(.55);
   display: grid; place-items: center;
 }
-.b-circle span { font-family: var(--f-cute); font-size: 24px; color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.12); }
+.b-circle span { font-family: var(--f-cute); font-size: 22px; color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.12); text-align: center; white-space: pre-line; }
+.breathe .b-phase { min-height: 24px; font-size: 15px; font-weight: 800; color: #25725F; }
 .breathe .b-cap { font-size: 13px; font-weight: 700; color: #3E7B6C; }
 
 .row.me .mood { animation: pop-in .3s cubic-bezier(.2,1.3,.4,1) both; transform-origin: 100% 0; }
 .row.me .mood svg { width: 58px; height: 58px; }
 
 /* 강조 서식 */
-mark.em-h {
+.em-h {
   color: inherit;
   padding: 0 2px; margin: 0 -1px;
   border-radius: 4px;
@@ -419,7 +420,7 @@ mark.em-h {
   transition: background-size .5s cubic-bezier(.3,.8,.3,1);
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
-.hit mark.em-h { background-size: 100% 58%; }
+.hit .em-h { background-size: 100% 58%; }
 .em-w { font-family: var(--f-hand); font-weight: 700; font-size: 1.24em; line-height: 1.32; color: #6A36E0; letter-spacing: -.045em; word-spacing: -.08em; }
 .em-s {
   font-weight: 800;
@@ -526,6 +527,18 @@ mark.em-h {
 .moods button { flex: 1; display: grid; place-items: center; padding: 8px 0; border-radius: 18px; background: var(--bg); animation: rise-in .3s cubic-bezier(.2,1.2,.4,1) both; }
 .moods button svg { width: 48px; height: 48px; }
 .moods button:active { transform: scale(.92); }
+.body-picks, .ground-colors { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+.body-picks .choice { min-height: 50px; justify-content: center; text-align: center; padding: 10px; }
+.body-picks .choice:last-child { grid-column: 1 / -1; }
+.release-card { width: min(100%, 330px); margin: 2px auto; padding: 18px; border-radius: 22px; background: linear-gradient(145deg,#E6F9F2,#EEF0FF); text-align: center; box-shadow: var(--shadow-card); }
+.release-card strong { display: block; font-family: var(--f-cute); font-size: 42px; font-weight: 400; color: var(--mint); }
+.release-card span { display: block; margin-top: 3px; font-size: 14px; font-weight: 700; color: var(--sub); }
+.ground-colors { grid-template-columns: repeat(5, 1fr); gap: 7px; }
+.ground-color { display: grid; justify-items: center; gap: 6px; padding: 9px 2px 7px; border-radius: 16px; background: #fff; box-shadow: inset 0 0 0 1.5px #F1D6E1; font-size: 11px; font-weight: 800; color: var(--sub); }
+.ground-color i { width: 34px; height: 34px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 2px rgba(255,255,255,.65), 0 3px 8px rgba(59,42,85,.12); }
+.ground-color:active { transform: scale(.92); }
+.ground-flash { position: absolute; inset: 0; z-index: 60; pointer-events: none; background: var(--c); animation: ground-flash .75s ease both; }
+@keyframes ground-flash { 0% { opacity: 0; } 30% { opacity: .27; } 100% { opacity: 0; } }
 @keyframes rise-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
 /* 흔들림·폭죽 */
@@ -605,6 +618,15 @@ mark.em-h {
 .r-sec { margin-top: 14px; background: #fff; border-radius: 26px; padding: 16px 18px; box-shadow: var(--shadow-card); }
 .r-sec h2 { margin: 0 0 10px; font-family: var(--f-cute); font-weight: 400; font-size: 20px; display: flex; align-items: center; gap: 8px; }
 .r-sec h2 svg { width: 22px; height: 22px; }
+.mind-moods { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.mind-mood { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 17px; background: var(--bg); }
+.mind-mood svg { flex: none; width: 38px; height: 38px; }
+.mind-mood small, .mind-row small { display: block; color: var(--sub); font-size: 11.5px; font-weight: 800; }
+.mind-mood strong, .mind-row strong { display: block; margin-top: 1px; font-size: 14px; font-weight: 800; }
+.mind-list { margin-top: 9px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mind-row { padding: 10px 12px; border-radius: 16px; background: #FFF7FA; }
+.mind-note { margin: 11px 0 0; padding-top: 10px; border-top: 1.5px dashed #F1D6E1; font-size: 14px; font-weight: 800; text-align: center; }
+.mind-badge { display: inline-flex; align-items: center; margin-top: 9px; padding: 5px 10px; border-radius: 99px; background: #FFF0B8; color: #8A5A00; font-size: 12px; font-weight: 800; }
 .traits { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
 .traits li { display: flex; gap: 10px; align-items: flex-start; font-size: 16px; line-height: 1.55; font-weight: 600; word-break: keep-all; }
 .traits li svg { flex: none; width: 18px; height: 18px; margin-top: 4px; }
@@ -621,6 +643,7 @@ mark.em-h {
 .ouch-oni .bubble { animation: none; font-size: 17px; background: #FFF4F8; box-shadow: none; }
 .ouch .from { font-size: 12px; color: var(--sub); font-weight: 700; margin-top: 5px; }
 .memo-review { margin-top: 10px; min-height: 44px; font-size: 15px; box-shadow: inset 0 0 0 1.6px #F1D6E1; }
+.memo-share { margin-top: 9px; min-height: 46px; font-size: 15px; }
 .r-sec.flash { animation: memo-flash 1.3s ease both; }
 @keyframes memo-flash { 0%, 45% { box-shadow: 0 0 0 3px var(--pink), var(--shadow-card); } 100% { box-shadow: var(--shadow-card); } }
 .result-scroll.quiet .r-hero { animation: none; }
@@ -701,8 +724,9 @@ mark.em-h {
 a.btn-main { display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
 a.btn-main svg { width: 20px; height: 20px; flex: none; }
 .sheet .s-foot .btn-ghost { margin-top: 4px; }
-.types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.types > div { border-radius: 18px; background: var(--bg); padding: 8px 4px 10px; text-align: center; position: relative; }
+.types { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.types > div { grid-column: span 2; border-radius: 18px; background: var(--bg); padding: 8px 4px 10px; text-align: center; position: relative; }
+.types > div:nth-child(4) { grid-column: 2 / span 2; }
 .types > div.me-type { background: #FFF3C4; box-shadow: inset 0 0 0 2.5px #FFC53D; }
 .types svg.oni { width: 56px; height: 88px; margin: 0 auto; }
 .types strong { display: block; font-size: 13px; font-weight: 800; line-height: 1.3; word-break: keep-all; }
@@ -716,6 +740,7 @@ a.btn-main svg { width: 20px; height: 20px; flex: none; }
 .sheet { width: 100%; max-height: 88%; overflow-y: auto; background: var(--bg); border-radius: 28px 28px 0 0; padding: 12px 16px calc(18px + env(safe-area-inset-bottom, 0px)); animation: sheet-up .4s cubic-bezier(.2,.9,.3,1) both; box-shadow: 0 -10px 30px rgba(59,42,85,.18); }
 @keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
 .sheet .grab { width: 44px; height: 5px; border-radius: 99px; background: #E6CCD8; margin: 0 auto 14px; }
+.sheet-close { position: sticky; top: 0; z-index: 3; float: right; width: 38px; height: 38px; margin: -6px 0 4px 8px; border-radius: 50%; background: #fff; box-shadow: 0 2px 10px rgba(92,44,88,.12); font-size: 24px; line-height: 1; color: var(--sub); }
 .sheet .s-log > * { margin-bottom: 10px; }
 .goal-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .goal-chips span { background: #fff; border-radius: 99px; padding: 6px 12px; font-size: 14px; font-weight: 800; box-shadow: inset 0 0 0 1.5px #F3D3DF; }
@@ -1225,7 +1250,7 @@ const Q = [
     { l: '내 인정이면 충분하다', s: 1, f: 'sympathy', m: ['스스로 쌓은 자존감은 자고 일어나면 무너져 있습니다'] },
     { l: '남의 인정도 필요하다', s: 0, f: 'smile', m: ['밥도 떠먹여 드리고 똥도 닦아드릴까요?'] } ] },
   { t: '누가 나를 싫어해도 나 자신까지 싫어할 필요는 없다.', c: [
-    { l: '그건 그 사람의 감정이다', s: 1, f: 'sparkle', m: ['야! 괜찮대! ㅋㅋ'] },
+    { l: '그건 그 사람의 감정이다', s: 1, f: 'sparkle', m: [{ k: 'aside', t: '(야! 괜찮대! ㅋㅋ)' }] },
     { l: '나도 나를 싫어하게 된다', s: 0, f: 'sparkle', m: ['헐, 나도 나도!', '싫어하는 게 같으면 빨리 친해진대요~'] } ] },
   { t: '나에게는 나만의 속도가 있다.', c: [
     { l: '내 속도로 가면 된다', s: 1, f: 'smile', m: ['길을 막지는 마시구요'] },
@@ -1240,7 +1265,7 @@ const Q = [
     { l: '남들만큼은 괜찮다', s: 1, f: 'curious', m: ['남들이 얼마만큼 괜찮은지 측정하고 계셨나요?'] },
     { l: '남들만큼 괜찮지는 않다', s: 0, f: 'sparkle', m: ['그쵸?'] } ] },
   { t: '처음 만나는 사람들 앞에서도 크게 주눅 들지 않는다.', c: [
-    { l: '별로 주눅 들지 않는다', s: 1, f: 'smile', m: ['누구요?'] },
+    { l: '별로 주눅 들지 않는다', s: 1, f: 'smile', m: [{ k: 'aside', t: '(누구요?)' }] },
     { l: '많이 긴장한다', s: 0, f: 'smile', m: [{ big: 1, t: '근데 왜 얼쩡거리지...?' }] } ] },
   { t: '남들과 나를 비교하면 대체로 내가 부족하다는 결론이 난다.', c: [
     { l: '내가 부족한 편이다', s: 0, f: 'sympathy', m: ['그 사실이 억울한 거는 아니죠?'] },
@@ -1259,7 +1284,7 @@ const Q = [
     { l: '그냥 말한다', s: 1, f: 'deadpan', m: [{ big: 1, t: '하든지 말든지' }] } ] },
   { t: '내 생각이 틀렸을까 봐 의견 내는 것을 자주 망설인다.', c: [
     { l: '틀릴까 봐 망설인다', s: 0, f: 'deadpan', m: ['틀렸으니까 앞으론 망설이지 말고 그냥 조용히 있어도 될 거 같아요'] },
-    { l: '일단 의견을 말한다', s: 1, f: 'smile', m: ['저기 주제를 이해는 하신 거 맞죠?'] } ] },
+    { l: '일단 의견을 말한다', s: 1, f: 'smile', m: [{ k: 'aside', t: '(저기 주제를 이해는 하신 거 맞죠?)' }] } ] },
   { t: '실수하면 그 생각이 며칠씩 머릿속을 떠나지 않는다.', c: [
     { l: '며칠씩 생각한다', s: 0, f: 'smile', m: ['우리도 며칠씩 뒷담 까긴 해'] },
     { l: '금방 잊는다', s: 1, f: 'smile', m: [{ big: 1, t: '남들이 대신 기억해 주니깐~' }] } ] },
@@ -1273,7 +1298,7 @@ const Q = [
     { l: '사랑받지 못한다고 느낀다', s: 0, f: 'sympathy', m: ['혹시 남들이 {name}을 사랑해 줘야 한다고 생각하시는 건 아니죠?'] },
     { l: '사랑받고 있다고 생각한다', s: 1, f: 'deadpan', m: ['혼자 기대하고 혼자 실망하는 스타일'] } ] },
   { t: '인생의 주인공은 내가 아니다.', c: [
-    { l: '나는 주인공이 아니다', s: 0, f: 'curious', m: ['혹시 아까 [빈말인지 오래 생각한다]로 대답하셨나요?'] },
+    { l: '나는 주인공이 아니다', s: 0, f: 'curious', m: [{ k: 'recall-praise' }] },
     { l: '내 인생에서는 내가 주인공이다', s: 1, f: 'smile', m: [{ big: 1, t: '관객은 없어요' }] } ] },
   { t: '나는 인생의 사소한 것들을 소중히 여긴다.', c: [
     { l: '소중히 여긴다', s: 1, f: 'sly', m: [{ big: 1, t: '사소? 사소한 건 너겠지...' }] },
@@ -1319,16 +1344,8 @@ const RESULTS = {
     title: '당신은 자신을 사랑합니다!', copy: '그 사실을 남들에게 들키지 마세요.\n조롱당하고 싶지 않다면.',
     traits: ['셀카를 백 장 찍고 아무 데도 안 올립니다. 혼자 봅니다', '속으로 ‘그래도 내가 낫지’를 하루 세 번 합니다', '겸손한 척하는 것까지 다 보입니다'],
     rx: '셀카는 하루 30장까지. 그리고 업로드하고 나 없는 단톡방에서 조롱 당하는 거 상상하기',
-    good: ['middle', '들켜도 아무도 관심이 없습니다'], bad: ['low', '둘 다 자기 얘기만 합니다'],
+    good: ['lower', '들켜도 아무도 관심이 없습니다'], bad: ['low', '둘 다 자기 얘기만 합니다'],
     theme: { main: '#FF4F86', deep: '#9B2C5C', c1: '#FFD6E4', c2: '#FFEFC7', bg: 'linear-gradient(160deg,#FFD6E4,#FFEFC7)' }
-  },
-  middle: {
-    short: '평균', status: '보통', pose: 'avg', help: '특별히 도와드릴 게 없어요. 특별한 게 없으셔서요.',
-    title: '당신은 평균입니다!', copy: '노잼.',
-    traits: ['모임에 안 나가도 아무도 모릅니다', '노래방에서 두 번째로 무난한 곡을 고릅니다', '이 결과도 내일이면 잊습니다'],
-    rx: '특별한 처방 없음. 원래 특별한 게 없습니다.',
-    good: ['middle', '서로 기억에 안 남아서 편합니다'], bad: ['high', '배경 역할만 맡게 됩니다'],
-    theme: { main: '#15A57E', deep: '#1B6E58', c1: '#D2F7EA', c2: '#FFF6C9', bg: 'linear-gradient(160deg,#D2F7EA,#FFF6C9)' }
   },
   lower: {
     short: '겸손 아님', status: '낮음', pose: 'bonk', help: '도와드리려고 하면 먼저 사과부터 하실 것 같아서요.',
@@ -1347,8 +1364,8 @@ const RESULTS = {
     theme: { main: '#7B5CFF', deep: '#46308F', c1: '#E4E2FF', c2: '#D7F1FF', bg: 'linear-gradient(160deg,#E4E2FF,#D7F1FF)' }
   }
 };
-const BAND_ORDER = ['max', 'high', 'upper', 'middle', 'lower', 'low'];
-const BAND_RANGE = { max: '100', high: '80~99', upper: '60~79', middle: '40~59', lower: '20~39', low: '0~19' };
+const BAND_ORDER = ['max', 'high', 'upper', 'lower', 'low'];
+const BAND_RANGE = { max: '100', high: '75~99', upper: '50~74', lower: '25~49', low: '0~24' };
 
 // 온보딩 목표
 const GOALS = [
@@ -1367,6 +1384,7 @@ const GOALS = [
 const $ = (s, r = document) => r.querySelector(s);
 const RM = matchMedia('(prefers-reduced-motion: reduce)');
 const wait = ms => new Promise(r => setTimeout(r, RM.matches ? Math.min(ms, 90) : ms));
+const realWait = ms => new Promise(r => setTimeout(r, ms));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const BASE_URL = 'https://aaffffffffff123-lang.github.io/self-esteem-meter/';
 const UA = navigator.userAgent || '';
@@ -1565,9 +1583,57 @@ function rich(str) {
 const flags = str => { const f = new Set(); String(str).replace(MARK, (_, a) => { [...a].forEach(x => { if (x !== 'h') f.add(x); }); return ''; }); return f; };
 
 // ===== 상태 =====
-const S = { name: '', goals: [], answers: [], order: [], i: 0, busy: false, result: null, imgBlob: null, peer: null };
+const MOODS = [['great', '아주 좋아요'], ['good', '괜찮아요'], ['meh', '그저 그래요'], ['sad', '슬퍼요'], ['mad', '화나요']];
+const MOOD_VALUE = { great: 2, good: 1, meh: 0, sad: -1, mad: -1 };
+const TENSIONS = [['jaw', '턱'], ['shoulder', '어깨'], ['belly', '배'], ['hand', '손'], ['unknown', '잘 모르겠어요']];
+const GROUND_COLORS = [['pink', '분홍', '#FF8FB5'], ['yellow', '노랑', '#FFD84D'], ['green', '초록', '#55D6A8'], ['blue', '파랑', '#63B7FF'], ['purple', '보라', '#A98CFF']];
+const emptyCare = () => ({ beforeMood: null, afterMood: null, moodTrend: null, breathed: false, tension: null, grounded: null, hydrated: false, badge: false });
+const S = { name: '', goals: [], answers: [], order: [], i: 0, busy: false, result: null, imgBlob: null, peer: null, care: emptyCare() };
 const who = () => S.name ? `${S.name}님` : '당신';
 const whose = () => S.name ? `${S.name}님의` : '당신의';
+
+const SESSION_KEY = 'esteem-lab-progress-v1';
+function clearSession() {
+  try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+}
+function saveSession() {
+  if (!Number.isInteger(S.i) || S.i < 0 || S.i >= Q.length) return;
+  try {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+      v: 1, name: S.name, goals: S.goals, answers: S.answers, order: S.order,
+      i: S.i, peer: S.peer, care: S.care, log: log.innerHTML
+    }));
+  } catch (e) {}
+}
+function restoreSession() {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    const validOrder = Array.isArray(d.order) && d.order.length === Q.length &&
+      d.order.every(x => Array.isArray(x) && x.length === 2 && x.includes(0) && x.includes(1));
+    const validAnswers = Array.isArray(d.answers) &&
+      d.answers.every(x => x === 0 || x === 1 || x === null);
+    if (d.v !== 1 || !validOrder || !validAnswers || !Number.isInteger(d.i) ||
+        d.i < 0 || d.i >= Q.length || typeof d.log !== 'string') {
+      clearSession(); return false;
+    }
+    S.name = String(d.name || '').replace(/\s+/g, ' ').trim().slice(0, 8);
+    S.goals = Array.isArray(d.goals) ? d.goals.filter(k => GOALS.some(g => g.k === k)) : [];
+    S.answers = d.answers.slice(0, Q.length);
+    S.order = d.order;
+    S.i = d.i;
+    S.peer = d.peer && Array.isArray(d.peer.answers) ? d.peer : null;
+    S.care = Object.assign(emptyCare(), d.care || {});
+    S.busy = false; S.result = null; S.imgBlob = null;
+    log.innerHTML = d.log; endGroup();
+    show('chat'); updateProgress(S.i); showChoices(S.i);
+    requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
+    return true;
+  } catch (e) {
+    clearSession(); return false;
+  }
+}
 
 // ===== 첫 화면 =====
 function buildWelcome() {
@@ -1611,6 +1677,101 @@ function meMood(kind) {
   const row = document.createElement('div'); row.className = 'row me';
   row.innerHTML = `<div class="mood">${moodFace(kind, 58)}</div>`;
   log.append(row); scrollEnd();
+}
+
+async function pickMood(prompt) {
+  await say({ t: prompt, f: 'curious' });
+  endGroup();
+  return new Promise(resolve => {
+    dock.innerHTML = `<div class="moods">${MOODS.map(([k, lab], idx) => `<button type="button" data-k="${idx + 1}" data-mood="${k}" aria-label="${lab}">${moodFace(k, 48)}</button>`).join('')}</div>`;
+    dock.querySelectorAll('[data-mood]').forEach(b => b.addEventListener('click', async () => {
+      if (!dockReady()) return;
+      dock.dataset.ready = '0';
+      const kind = b.dataset.mood;
+      SFX.play('mood'); dockWait(); meMood(kind);
+      await wait(220); resolve(kind);
+    }));
+    armDock();
+  });
+}
+
+async function breathPhase(circle, label, phase, seconds, from, to, sound) {
+  label.textContent = `${phase}\n${seconds}초`;
+  if (sound) SFX.play(sound);
+  const anim = circle.animate(
+    [{ transform: `scale(${from})` }, { transform: `scale(${to})` }],
+    { duration: RM.matches ? 1 : seconds * 1000, easing: 'ease-in-out', fill: 'forwards' }
+  );
+  await Promise.all([anim.finished.catch(() => {}), realWait(seconds * 1000)]);
+}
+
+async function bodyCheck() {
+  await say({ t: '이번에는 몸도 잠깐 확인할게요. 지금 가장 힘이 들어간 곳은 어디예요?', f: 'curious' });
+  endGroup();
+  const key = await new Promise(resolve => {
+    dock.innerHTML = `<div class="body-picks">${TENSIONS.map(([k, lab], idx) => `<button class="choice" type="button" data-k="${idx + 1}" data-body="${k}">${esc(lab)}</button>`).join('')}</div>`;
+    dock.querySelectorAll('[data-body]').forEach(b => b.addEventListener('click', async () => {
+      if (!dockReady()) return;
+      dock.dataset.ready = '0';
+      const picked = b.dataset.body;
+      dockWait(); SFX.play('tap');
+      const lab = TENSIONS.find(x => x[0] === picked)[1];
+      meSay(lab); SFX.play('send');
+      await wait(220); resolve(picked);
+    }));
+    armDock();
+  });
+  S.care.tension = key;
+  const guide = {
+    jaw: '이를 살짝 떼고, 혀를 편하게 내려놓아 보세요.',
+    shoulder: '어깨를 귀 쪽으로 올렸다가 툭 내려놓아 보세요.',
+    belly: '배에 들어간 힘을 한 번만 천천히 풀어 보세요.',
+    hand: '손가락을 쫙 펴고 힘을 빼 보세요.',
+    unknown: '잘 모르겠다면 어깨를 한 번 올렸다가 툭 내려놓아 보세요.'
+  }[key];
+  await say({ t: guide, f: 'smile' });
+  oniGroup('smile');
+  const card = document.createElement('div'); card.className = 'release-card';
+  card.innerHTML = '<strong>30%</strong><span>딱 이만큼만 힘 빼기 · 3초</span>';
+  group.stack.append(card); scrollEnd();
+  await realWait(3000);
+  card.querySelector('strong').textContent = '완료';
+  card.querySelector('span').textContent = '완전히 안 풀려도 괜찮아요';
+  SFX.play('soft'); buzz(16);
+  await wait(260); endGroup();
+  await say({ t: '30%만 덜 긴장해도 성공이에요.', f: 'smile' });
+  endGroup();
+}
+
+async function groundingCheck() {
+  await say({ t: '화면 밖으로 시선을 잠깐 돌려볼게요. 지금 주변에서 가장 먼저 보이는 색을 골라주세요.', f: 'curious' });
+  endGroup();
+  const key = await new Promise(resolve => {
+    dock.innerHTML = `<div class="ground-colors">${GROUND_COLORS.map(([k, lab, color], idx) => `<button class="ground-color" type="button" data-k="${idx + 1}" data-ground="${k}" style="--c:${color}"><i></i><span>${lab}</span></button>`).join('')}</div>`;
+    dock.querySelectorAll('[data-ground]').forEach(b => b.addEventListener('click', async () => {
+      if (!dockReady()) return;
+      dock.dataset.ready = '0';
+      const picked = b.dataset.ground;
+      dockWait(); SFX.play('mood');
+      const item = GROUND_COLORS.find(x => x[0] === picked);
+      meSay(item[1]); SFX.play('send');
+      const flash = document.createElement('div'); flash.className = 'ground-flash';
+      flash.style.setProperty('--c', item[2]);
+      $('#app').append(flash);
+      const remove = () => { if (flash.isConnected) flash.remove(); };
+      flash.addEventListener('animationend', remove, { once: true });
+      setTimeout(remove, 1000);
+      await wait(240); resolve(picked);
+    }));
+    armDock();
+  });
+  S.care.grounded = key;
+  const label = GROUND_COLORS.find(x => x[0] === key)[1];
+  await say({ t: `주변에서 ${label} 계열 물건 하나를 찾아서 모양을 잠깐 살펴보세요.`, f: 'smile' });
+  endGroup();
+  await new Promise(res => go('찾았어요', res));
+  await say({ t: '현실 감각을 확인했어요. 잠깐 다녀오셨네요.', f: 'smile' });
+  endGroup();
 }
 async function typing(ms) {
   const t = document.createElement('div'); t.className = 'bubble typing'; t.innerHTML = '<i></i><i></i><i></i>';
@@ -1672,7 +1833,7 @@ async function emphasize(el, msg) {
 
 function bubbleEl(msg, extra = '') {
   const b = document.createElement('div');
-  b.className = 'bubble' + (extra ? ' ' + extra : '');
+  b.className = ['bubble', extra, msg.sing ? 'sing' : ''].filter(Boolean).join(' ');
   b.append(rich(msg.t));
   return b;
 }
@@ -1711,6 +1872,16 @@ function confetti() {
 
 async function say(raw, defFace) {
   const msg = typeof raw === 'string' ? { t: raw } : raw;
+  if (msg.k === 'recall-praise') {
+    const ci = Number.isInteger(S.answers[16]) ? S.answers[16] : 1;
+    const text = ci === 1
+      ? '혹시 아까 [h:빈말인지 오래 생각한다]고 대답하셨나요?'
+      : '아까 칭찬은 그냥 받아들인다고 하셨죠? 주인공은 아닌데 칭찬은 본인 거고요.';
+    const key = SAY_KEY; SAY_KEY = '';
+    await say({ t: text, f: ci === 1 ? 'curious' : 'sly' }, defFace);
+    SAY_KEY = key;
+    return;
+  }
   if (msg.k === 'bait-input') {
     const key = SAY_KEY; SAY_KEY = '';
     await say({ t: msg.ask, f: 'sparkle' }, defFace);
@@ -1768,6 +1939,7 @@ function showChoices(i) {
   dock.innerHTML = S.order[i].map((ci, pos) => `<button class="choice" type="button" data-k="${pos + 1}" data-pos="${pos}"><span>${esc(q.c[ci].l)}</span><span class="key" aria-hidden="true">${pos + 1}</span></button>`).join('');
   dock.querySelectorAll('.choice').forEach(b => b.addEventListener('click', () => choose(+b.dataset.pos, b)));
   armDock();
+  saveSession();
 }
 
 async function choose(pos, btn) {
@@ -1787,6 +1959,11 @@ async function choose(pos, btn) {
   const lastText = typeof lastComment === 'string' ? lastComment : (lastComment.t || lastComment.cut || '');
   await wait(Math.min(2000, Math.max(750, plain(lastText).length * 35)));
   S.busy = false;
+  if (i === 15 && !S.care.badge) {
+    await say({ k: 'badge', name: '나에게 관심 있음' });
+    S.care.badge = true; endGroup();
+  }
+  if (i === 23 && !S.care.grounded) await groundingCheck();
   const chEnd = CHAPTERS.findIndex(ch => ch.to === i);
   if (i === Q.length - 1) return go('결과 볼게요', finish);
   if (chEnd >= 0 && Number.isInteger(CHAPTERS[chEnd].rest)) await breakTime(CHAPTERS[chEnd].rest, i + 1);
@@ -1812,16 +1989,17 @@ async function breakTime(n, doneCount) {
     await say({ t: '잠깐 숨 고르고 갈게요.', f: 'smile' });
     oniGroup('smile'); setFace('smile');
     const card = document.createElement('div'); card.className = 'breathe';
-    card.innerHTML = `<div class="b-ring"><div class="b-circle"><span>들이쉬고</span></div></div><div class="b-cap">원을 따라 천천히</div>`;
+    card.innerHTML = '<div class="b-ring"><div class="b-circle"><span>준비</span></div></div><div class="b-phase">4초 들이쉬고 · 2초 멈추고 · 6초 내쉬기</div><div class="b-cap">한 번만 천천히 따라와 주세요</div>';
     group.stack.append(card); scrollEnd();
     const circle = card.querySelector('.b-circle'), label = card.querySelector('span');
-    await wait(500);
-    const inhale = circle.animate([{ transform: 'scale(.55)' }, { transform: 'scale(1)' }], { duration: RM.matches ? 10 : 2600, easing: 'ease-in-out', fill: 'forwards' });
-    SFX.play('inhale'); await inhale.finished.catch(() => {});
-    label.textContent = '내쉬고';
-    const exhale = circle.animate([{ transform: 'scale(1)' }, { transform: 'scale(.55)' }], { duration: RM.matches ? 10 : 2600, easing: 'ease-in-out', fill: 'forwards' });
-    SFX.play('exhale'); await exhale.finished.catch(() => {});
-    endGroup();
+    await realWait(500);
+    await breathPhase(circle, label, '들이쉬기', 4, .55, 1, 'inhale');
+    await breathPhase(circle, label, '멈추기', 2, 1, 1);
+    await breathPhase(circle, label, '내쉬기', 6, 1, .55, 'exhale');
+    S.care.breathed = true;
+    card.querySelector('.b-phase').textContent = '호흡 완료';
+    card.querySelector('.b-cap').textContent = '방금 12초는 꽤 제대로 쉬었어요';
+    buzz(20); endGroup();
     await say({ t: '네, [h:그 정도면 충분히 쉬셨어요.]', f: 'deadpan' });
     endGroup();
     return new Promise(res => go('다 쉬었어요', res));
@@ -1833,20 +2011,16 @@ async function breakTime(n, doneCount) {
     return new Promise(res => go('넵', res));
   }
   if (n === 2) {
-    await say({ t: '지금 기분은 어떤가요?', f: 'curious' });
-    endGroup();
-    const kinds = [['great', '아주 좋아요'], ['good', '괜찮아요'], ['meh', '그저 그래요'], ['sad', '슬퍼요'], ['mad', '화나요']];
-    await new Promise(res => {
-      dock.innerHTML = `<div class="moods">${kinds.map(([k, lab], idx) => `<button type="button" data-k="${idx + 1}" data-mood="${k}" aria-label="${lab}">${moodFace(k, 48)}</button>`).join('')}</div>`;
-      dock.querySelectorAll('[data-mood]').forEach(b => b.addEventListener('click', () => {
-        if (!dockReady()) return; dock.dataset.ready = '0';
-        SFX.play('mood'); dockWait(); meMood(b.dataset.mood); res();
-      }));
-      armDock();
+    const after = await pickMood('처음과 비교해 볼게요. 지금 기분과 가장 가까운 표정을 골라주세요.');
+    S.care.afterMood = after;
+    const diff = (MOOD_VALUE[after] ?? 0) - (MOOD_VALUE[S.care.beforeMood] ?? 0);
+    S.care.moodTrend = diff > 0 ? 'up' : diff < 0 ? 'down' : 'same';
+    await say({
+      t: diff > 0 ? '저도 좋아졌어요.' : diff < 0 ? '측정이 정확하게 진행되고 있어요.' : '웬만해선 안 바뀌시는군요.',
+      f: diff > 0 ? 'happy' : diff < 0 ? 'smile' : 'deadpan'
     });
-    await wait(300);
-    await say({ t: '기록했어요. [h:아무도 안 봐요.]', f: 'smile' });
     endGroup();
+    await bodyCheck();
     return new Promise(res => go('다음', res));
   }
   if (n === 3) {
@@ -1855,10 +2029,24 @@ async function breakTime(n, doneCount) {
     el.querySelector('p').style.fontWeight = '800';
     log.append(el); scrollEnd(); SFX.play('notify');
     await wait(600);
-    await new Promise(res => go('마셨어요', res));
-    SFX.play('water');
-    await wait(200);
-    await say({ t: '아, 넵.', f: 'deadpan', big: 1 });
+    const drank = await new Promise(resolve => {
+      dock.innerHTML = '<button class="choice soft" type="button" data-k="1" data-water="yes">마셨어요</button><button class="choice soft" type="button" data-k="2" data-water="later">지금은 없어요</button>';
+      dock.querySelectorAll('[data-water]').forEach(b => b.addEventListener('click', async () => {
+        if (!dockReady()) return;
+        dock.dataset.ready = '0'; dockWait(); SFX.play('tap');
+        const yes = b.dataset.water === 'yes';
+        meSay(b.textContent); SFX.play('send');
+        await wait(220); resolve(yes);
+      }));
+      armDock();
+    });
+    S.care.hydrated = drank;
+    if (drank) {
+      SFX.play('water');
+      await say({ t: '아, 넵.', f: 'deadpan', big: 1 });
+    } else {
+      await say({ t: '그럼 끝나고 한 잔 챙겨주세요. 제가 확인할 방법은 없지만요.', f: 'smile' });
+    }
     endGroup();
     return new Promise(res => go('마지막 장 할게요', res));
   }
@@ -1937,25 +2125,27 @@ $('#go-start').addEventListener('click', () => { SFX.unlock(); SFX.play('tap'); 
 async function start() {
   if (!$('#chat').hidden) return;
   SFX.unlock();
-  S.answers = []; S.result = null; S.imgBlob = null; S.busy = false;
+  clearSession();
+  S.answers = []; S.result = null; S.imgBlob = null; S.busy = false; S.i = 0; S.care = emptyCare();
   $('#chat').classList.remove('review');
   S.order = Q.map(() => (Math.random() < .5 ? [0, 1] : [1, 0]));
   log.innerHTML = ''; endGroup();
   if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
-  show('chat'); updateProgress(0); dockWait();
+  show('chat'); $('#step').innerHTML = `0<small> / ${Q.length}</small>`; $('#thermo-fill').style.width = '0%'; dockWait();
   SFX.play('chapter');
   await wait(350);
   const intro = [
     { t: `${S.name ? S.name + '님, ' : ''}안녕하세요. 마음 코치 온이예요. 만나서 반가워요.`, f: 'happy' },
-    { t: '다른 사람이 나를 어떻게 보는지는 신경 쓰면서도, 정작 내가 나를 어떻게 대하고 있는지는 놓칠 때가 있어요.', f: 'smile' },
-    { t: '오늘은 몇 가지 질문을 통해 스스로를 얼마나 믿고 있는지, 어떤 순간에 자신을 작게 느끼는지 함께 살펴보려고 해요.', f: 'smile' },
-    { t: '저는 그 과정에서 질문을 드리고, 답변을 함께 살펴보면서 자신을 조금 더 잘 이해하실 수 있도록 도와드릴 거예요.', f: 'smile' },
-    { t: '잘 보이려고 애쓰실 필요는 없어요. 평소의 나와 가장 가까운 답을 편하게 골라주세요. 그럼 시작할게요.', f: 'smile' }
+    { t: '오늘은 몇 가지 질문을 통해 스스로를 얼마나 믿고 있는지 살펴볼게요.', f: 'smile' },
+    { t: '잘 보이려고 애쓰실 필요는 없어요. 평소의 나와 가장 가까운 답을 편하게 골라주세요.', f: 'smile' }
   ];
   for (const msg of intro) {
     await say(msg);
-    await wait(Math.min(1800, Math.max(650, plain(msg.t).length * 25)));
+    await wait(Math.min(1600, Math.max(550, plain(msg.t).length * 22)));
   }
+  endGroup();
+  S.care.beforeMood = await pickMood('측정 전의 기분을 기록해 둘게요. 지금 상태와 가장 가까운 표정을 골라주세요.');
+  await say({ t: '기록했어요.', f: 'smile' });
   endGroup();
   ask(0);
 }
@@ -1973,7 +2163,7 @@ document.addEventListener('keydown', e => {
 
 // ===== 결과 계산 =====
 const scoreOf = ans => Math.round(ans.reduce((sum, ci, i) => sum + Q[i].c[ci].s, 0) / Q.length * 100);
-const bandOf = s => s === 100 ? 'max' : s >= 80 ? 'high' : s >= 60 ? 'upper' : s >= 40 ? 'middle' : s >= 20 ? 'lower' : 'low';
+const bandOf = s => s === 100 ? 'max' : s >= 75 ? 'high' : s >= 50 ? 'upper' : s >= 25 ? 'lower' : 'low';
 function erf(x) { const t = 1 / (1 + .3275911 * Math.abs(x)); const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - .284496736) * t + .254829592) * t * Math.exp(-x * x); return x >= 0 ? y : -y; }
 function topPct(sc) {
   if (sc >= 100) return '0.000000001';
@@ -1986,7 +2176,12 @@ function painCandidates(ans) {
   const out = [];
   ans.forEach((ci, qi) => Q[qi].c[ci].m.forEach((raw, mi) => {
     const msg = typeof raw === 'string' ? { t: raw } : raw;
-    if (msg.k === 'badge' || msg.k === 'aside') return;
+    if (msg.k === 'badge' || msg.k === 'aside' || msg.k === 'recall-praise') return;
+    if (msg.k === 'bait-input') {
+      const p = plain(msg.cut);
+      if (p.length <= 40) out.push({ key: `${qi}.${ci}.${mi}.1`, text: p, w: 4 });
+      return;
+    }
     if (msg.k === 'notify') { msg.lines.forEach((ln, li) => { const p = plain(ln); if (p.length <= 40) out.push({ key: `${qi}.${ci}.${mi}.${li}`, text: p, from: msg.from, w: 2 }); }); return; }
     if (typeof msg.t !== 'string') return;
     const p = plain(msg.t).replace(/\n/g, ' ');
@@ -1998,8 +2193,10 @@ function painCandidates(ans) {
 }
 function pickPain(ans) {
   const c = painCandidates(ans); if (!c.length) return null;
-  const top = Math.max(...c.map(x => x.w)), pool = c.filter(x => x.w === top);
-  return pool[Math.floor(Math.random() * pool.length)];
+  const total = c.reduce((sum, x) => sum + x.w, 0);
+  let r = Math.random() * total;
+  for (const x of c) { r -= x.w; if (r <= 0) return x; }
+  return c[c.length - 1];
 }
 function painFromKey(key, name) {
   if (!/^\d{1,2}\.[01]\.\d{1,2}\.\d{1,2}$/.test(key || '')) return null;
@@ -2007,7 +2204,7 @@ function painFromKey(key, name) {
   const q = Q[qi]; if (!q) return null;
   const raw = q.c[ci] && q.c[ci].m[mi]; if (!raw) return null;
   const msg = typeof raw === 'string' ? { t: raw } : raw;
-  if (msg.k === 'badge' || msg.k === 'aside') return null;
+  if (msg.k === 'badge' || msg.k === 'aside' || msg.k === 'recall-praise') return null;
   if (msg.k === 'notify') { const ln = msg.lines[li]; return ln ? { key, text: plain(ln), from: msg.from } : null; }
   if (msg.k === 'bait-input') return li === 1 && typeof msg.cut === 'string' ? { key, text: plain(msg.cut) } : null;
   if (li !== 0 || typeof msg.t !== 'string') return null;
@@ -2049,7 +2246,7 @@ async function finish() {
   S.busy = true;
   $('#thermo-fill').style.width = '100%';
   const score = scoreOf(S.answers);
-  S.result = { score, band: bandOf(score), name: S.name, pain: pickPain(S.answers), shared: false, answers: S.answers.slice(), vs: S.peer || null };
+  S.result = { score, band: bandOf(score), name: S.name, pain: pickPain(S.answers), shared: false, answers: S.answers.slice(), vs: S.peer || null, care: { ...S.care } };
   S.imgBlob = null;
   show('analysis');
   $('#an-oni').innerHTML = oniSVG({ pose: 'stand', face: 'curious' });
@@ -2057,10 +2254,40 @@ async function finish() {
   SFX.play('analyze');
   for (const t of lines) { const p = $('#an-text'); p.textContent = t; p.style.animation = 'none'; void p.offsetWidth; p.style.animation = ''; await wait(1100); }
   S.busy = false;
+  clearSession();
   renderResult(S.result);
 }
 
 // ===== 결과 화면 =====
+function careRecordHTML(d) {
+  if (d.shared || !d.care) return '';
+  const c = d.care;
+  const mood = key => MOODS.find(x => x[0] === key);
+  const before = mood(c.beforeMood), after = mood(c.afterMood);
+  if (!before && !after) return '';
+  const tension = TENSIONS.find(x => x[0] === c.tension);
+  const ground = GROUND_COLORS.find(x => x[0] === c.grounded);
+  const rows = [];
+  if (c.breathed) rows.push(['호흡', '4초 · 2초 · 6초']);
+  if (tension) rows.push(['몸의 긴장', `${tension[1]} 힘 30% 풀기`]);
+  if (ground) rows.push(['현실 감각', `${ground[1]} 계열 물건 찾기`]);
+  rows.push(['수분', c.hydrated ? '물 한 잔 마심' : '측정 후 한 잔 예정']);
+  const trend = c.moodTrend === 'up' ? '처음보다 기분이 조금 올라갔어요.'
+    : c.moodTrend === 'down' ? '처음보다 기분이 조금 내려갔어요.'
+    : '처음과 같은 기분이에요.';
+  const moodCard = (item, title) => item
+    ? `<div class="mind-mood">${moodFace(item[0], 38)}<div><small>${title}</small><strong>${esc(item[1])}</strong></div></div>`
+    : '';
+  return `
+    <section class="r-sec mind-record">
+      <h2>${IC.heart}오늘의 마음 기록</h2>
+      <div class="mind-moods">${moodCard(before, '측정 전')}${moodCard(after, '측정 후')}</div>
+      <div class="mind-list">${rows.map(([k, v]) => `<div class="mind-row"><small>${esc(k)}</small><strong>${esc(v)}</strong></div>`).join('')}</div>
+      <p class="mind-note">${esc(trend)}</p>
+      ${c.badge ? '<span class="mind-badge">배지 · 나에게 관심 있음</span>' : ''}
+    </section>`;
+}
+
 function renderResult(d, opt = {}) {
   const R = RESULTS[d.band], T = R.theme, isMax = d.band === 'max';
   const idx = isMax ? '20,000,000,000' : String(d.score);
@@ -2078,7 +2305,9 @@ function renderResult(d, opt = {}) {
         <div class="ouch-oni"><div class="avatar">${avatarSVG(pc.face)}</div><div><div class="bubble">${esc(pc.text)}</div>${pc.from ? `<div class="from">${esc(pc.from)}에서</div>` : ''}</div></div>
       </div>
       ${canReview ? `<button class="btn-ghost memo-review" type="button" id="review">대화 다시 보기</button>` : ''}
+      ${!d.shared ? `<button class="btn-sub memo-share" type="button" id="share-link-memo">${IC.share}이 말과 결과 공유하기</button>` : ''}
     </section>` : '';
+  const careBlock = careRecordHTML(d);
   const vsBlock = d.vs && d.answers ? vsHTML(d) : '';
   const typeCard = b => {
     const locked = b === 'max' && d.band !== 'max';
@@ -2103,9 +2332,10 @@ function renderResult(d, opt = {}) {
       <p class="r-copy">${esc(R.copy)}</p>
       <div class="gauge" aria-hidden="true">
         <div class="g-track"><div class="g-mark ${isMax ? 'over' : ''}" style="left:${gaugePos}%"></div></div>
-        <div class="g-labels"><span>낮음</span><span>보통</span><span>높음</span></div>
+        <div class="g-labels"><span>낮음</span><span>높음</span></div>
       </div>
     </article>
+    ${careBlock}
     ${vsBlock}
     ${painBlock}
     <section class="r-sec"><h2>${IC.spark}이런 특징이 있어요</h2><ul class="traits">${R.traits.map(t => `<li>${IC.heart}<span>${esc(t)}</span></li>`).join('')}</ul></section>
@@ -2121,27 +2351,36 @@ function renderResult(d, opt = {}) {
     <p class="r-foot">아무것도 증명하지 않습니다.<br>개인정보 수집 없음</p>`;
   const sc = $('#result-scroll'), resEl = $('#result');
   sc.classList.toggle('quiet', !!opt.quiet);
-  sc.innerHTML = html; sc.scrollTop = 0;
+  sc.innerHTML = html;
   // 링크로 들어온 친구 화면: '나도 측정하기'를 화면 아래에 붙여 둠
   resEl.querySelectorAll('.r-dock').forEach(x => x.remove());
   resEl.classList.toggle('has-dock', !!d.shared);
   if (d.shared) resEl.insertAdjacentHTML('beforeend', `<div class="r-dock"><button class="btn-main attn" type="button" id="me-too">나도 측정하기</button></div>`);
   show('result');
   if (opt.focus) {
-    const f = $('#' + opt.focus);
-    if (f) { f.scrollIntoView({ block: 'start' }); sc.scrollTop = Math.max(0, sc.scrollTop - 6); if (opt.flash) f.classList.add('flash'); }
+    requestAnimationFrame(() => {
+      const f = $('#' + opt.focus);
+      if (f) { f.scrollIntoView({ block: 'start' }); sc.scrollTop = Math.max(0, sc.scrollTop - 6); if (opt.flash) f.classList.add('flash'); }
+    });
+  } else {
+    sc.scrollTop = 0;
+    requestAnimationFrame(() => { sc.scrollTop = 0; });
   }
   if (!d.shared && !opt.quiet) { SFX.play(isMax ? 'boom' : 'result'); if (isMax) confetti(); }
   const vsShare = $('#vs-share'); if (vsShare) vsShare.addEventListener('click', () => shareLink(d, true));
   const review = $('#review'); if (review) review.addEventListener('click', () => openReview(d));
   const save = $('#save-img'); if (save) save.addEventListener('click', () => saveImage(d));
   const share = $('#share-link'); if (share) share.addEventListener('click', () => shareLink(d));
+  const memoShare = $('#share-link-memo'); if (memoShare) memoShare.addEventListener('click', () => shareLink(d));
   const help = $('#help'); if (help) help.addEventListener('click', () => helpSheet(d));
-  const again = $('#again'); if (again) again.addEventListener('click', () => { SFX.play('tap'); start(); });
+  const again = $('#again'); if (again) again.addEventListener('click', () => {
+    if (S.busy) { toast('잠깐만요'); return; }
+    SFX.play('tap'); sc.scrollTop = 0; start();
+  });
   const meToo = $('#me-too'); if (meToo) meToo.addEventListener('click', () => {
     SFX.unlock(); SFX.play('tap');
     try { history.replaceState(null, '', location.pathname); } catch (e) {}
-    S.name = ''; S.goals = [];
+    S.name = ''; S.goals = []; clearSession();
     // 링크를 보낸 사람 답이 실려 있으면, 다 하고 나서 그 사람과 비교해 보여 줌
     S.peer = d.answers ? { name: d.name, answers: d.answers, score: d.score, band: d.band } : null;
     show('welcome');
@@ -2163,9 +2402,10 @@ function vsHTML(d) {
     const R = RESULTS[p.band];
     return `<div class="vs-p"><div class="vs-art">${oniSVG({ pose: R.pose })}</div><b>${esc(p.label)}</b><strong style="color:${R.theme.main}">${p.band === 'max' ? '200억' : p.score}</strong><small>${esc(R.short)}</small></div>`;
   };
-  // 궁합: 이미 있는 궁합 자료에서 두 사람 유형이 잘 맞는/안 맞는 사이인지
-  const RR = RESULTS[Rr.band];
-  const match = RR.good[0] === L.band ? ['good', '잘 맞는 유형', RR.good[1]] : RR.bad[0] === L.band ? ['bad', '안 맞는 유형', RR.bad[1]] : null;
+  // 궁합은 공유 전후에도 최초 측정자를 기준으로 같은 문장이 나오게 한다.
+  const baseR = RESULTS[d.band], otherBand = d.vs.band;
+  const match = baseR.good[0] === otherBand ? ['good', '잘 맞는 유형', baseR.good[1]]
+    : baseR.bad[0] === otherBand ? ['bad', '안 맞는 유형', baseR.bad[1]] : null;
   const ex = x => `
       <div class="vs-ex">
         <p class="ouch-q"><b>Q.</b><span>${esc(Q[x.i].t)}</span></p>
@@ -2275,25 +2515,43 @@ async function helpSheet(d) {
   S.busy = true; SFX.play('tap');
   const R = RESULTS[d.band];
   const wrap = document.createElement('div'); wrap.className = 'sheet-wrap';
-  wrap.innerHTML = `<div class="sheet" role="dialog" aria-label="맞춤 관리"><div class="grab"></div><div class="s-log" aria-live="polite"></div><div class="s-foot"></div></div>`;
+  wrap.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="맞춤 관리"><button class="sheet-close" type="button" aria-label="닫기">×</button><div class="grab"></div><div class="s-log" aria-live="polite"></div><div class="s-foot"></div></div>`;
   $('#app').append(wrap);
+  let dismissed = false;
+  const onKey = e => { if (e.key === 'Escape') close(); };
+  const close = () => {
+    if (dismissed) return;
+    dismissed = true; SFX.play('tap');
+    document.removeEventListener('keydown', onKey);
+    wrap.remove();
+  };
+  wrap.querySelector('.sheet-close').addEventListener('click', close);
+  wrap.addEventListener('click', e => { if (e.target === wrap) close(); });
+  document.addEventListener('keydown', onKey);
+
   const prevLog = log; log = wrap.querySelector('.s-log'); endGroup();
   try {
     const chosen = GOALS.filter(g => S.goals.includes(g.k)).map(g => g.l);
     await wait(320);
+    if (dismissed) return;
     if (chosen.length) {
       await say({ t: `${who()}이 처음에 고르신 목표를 확인했어요.`, f: 'smile' });
+      if (dismissed) return;
       group.stack.insertAdjacentHTML('beforeend', `<div class="goal-chips">${chosen.map(c => `<span>${esc(c)}</span>`).join('')}</div>`);
       scrollEnd(); await wait(650);
     } else {
       await say({ t: '처음에 목표는 따로 안 고르셨네요.', f: 'smile' });
     }
+    if (dismissed) return;
     await say({ t: '측정 결과를 바탕으로 맞춤 관리를 준비해 봤는데요,', f: 'sympathy' });
+    if (dismissed) return;
     await say({ big: 1, t: '도와드릴 수 있는 게 없어요.', f: 'deadpan' });
+    if (dismissed) return;
     await say({ t: R.help, f: 'smile' });
   } finally {
     endGroup(); log = prevLog; S.busy = false;
   }
+  if (dismissed) return;
   const foot = wrap.querySelector('.s-foot');
   foot.innerHTML = `<section class="care-next" aria-labelledby="care-next-title">
       <h2 class="care-next-title" id="care-next-title">다음 단계</h2>
@@ -2313,10 +2571,9 @@ async function helpSheet(d) {
       </div>
     </section>
     <button class="btn-ghost" type="button">확인</button>`;
-  const close = () => { SFX.play('tap'); wrap.remove(); };
+  const confirm = foot.querySelector('.btn-ghost');
   foot.querySelectorAll('a.care-card').forEach(a => a.addEventListener('click', () => SFX.play('tap')));
-  foot.querySelector('.btn-ghost').addEventListener('click', close);
-  wrap.addEventListener('click', e => { if (e.target === wrap) close(); });
+  if (confirm) confirm.addEventListener('click', close);
   const sheet = wrap.querySelector('.sheet'); sheet.scrollTop = sheet.scrollHeight;
 }
 
@@ -2591,7 +2848,7 @@ function fromURL() {
 // ===== 초기화 =====
 buildWelcome(); drawSoundButtons();
 const shared = fromURL();
-if (shared) renderResult(shared); else show('welcome');
+if (shared) renderResult(shared); else if (!restoreSession()) show('welcome');
 setTimeout(() => { const sp = $('#splash'); sp.classList.add('out'); setTimeout(() => { sp.hidden = true; }, 480); }, RM.matches ? 150 : 1150);
 window.__MC = { S, renderResult, makeCard, RESULTS, scoreOf, bandOf, fromURL };
 })();
