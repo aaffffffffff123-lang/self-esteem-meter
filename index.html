@@ -1935,12 +1935,9 @@ function confetti() {
 async function say(raw, defFace) {
   const msg = typeof raw === 'string' ? { t: raw } : raw;
   if (msg.k === 'recall-praise') {
-    const ci = Number.isInteger(S.answers[16]) ? S.answers[16] : 1;
-    const text = ci === 1
-      ? '혹시 아까 [h:빈말인지 오래 생각한다]고 대답하셨나요?'
-      : '아까 칭찬은 그냥 받아들인다고 하셨죠? 주인공은 아닌데 칭찬은 본인 거고요.';
+    const text = '혹시 아까 [빈말인지 오래 생각한다]로 대답하셨나요?';
     const key = SAY_KEY; SAY_KEY = '';
-    await say({ t: text, f: ci === 1 ? 'curious' : 'sly' }, defFace);
+    await say({ t: text, f: 'curious' }, defFace);
     SAY_KEY = key;
     return;
   }
