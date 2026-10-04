@@ -2206,7 +2206,9 @@ async function thoughtLabelCheck() {
   await say({ t: '생각을 곧바로 사실로 받아들이지 않고, 한 번 떨어져서 보게 되는 거죠.', f: 'smile' });
   await say({ t: '어떠세요. 마음이 조금 정돈됐나요?', f: 'curious' });
   endGroup();
-  return new Promise(res => go('그런 것 같아요', res));
+  await new Promise(res => go('그런 것 같아요', res));
+  await say({ t: '그럼 이제 다시 거리를 좁히세요. 이 이상 거리를 두면 현실 도피예요.', f: 'smile' });
+  endGroup();
 }
 
 async function breakTime(n, doneCount) {
