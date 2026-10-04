@@ -1439,7 +1439,7 @@ const SENDER_COLOR = { '동료 단톡방': '#2FCB9F', '동창 단톡방': '#4DA8
 const SFX = (() => {
   let ctx, master, verb, noiseBuf, on = true, cur = 1;
   let bgmGain, bgmTimer = 0, bgmStep = 0, bgmStarted = false, bgmWanted = false, bgmActive = false;
-  const BGM_LEVEL = .1;
+  const BGM_LEVEL = .25;
   const BGM_NOTES = [659.25, 783.99, 587.33, 523.25, 659.25, 880, 783.99, 587.33];
   const BGM_GAPS = [5200, 6800, 5800, 7400, 6100, 7000, 5600, 7600];
   const LV = {tap: 2.42, send: 4.75, soft: 11.25, recv: 2.37, q: 2.75, marker: 12.41, hammer: 1.68, minihammer: 2.42, sparkle: 3.8, scribble: 15, peel: 3.28, notify: 1.9, quote: 3.08, badge: 3.35, inhale: 5.31, exhale: 5.45, pant: 1.9, chapter: 3.2, water: 5.0, mood: 2.63, analyze: 3.9, result: 2.9, boom: 1.38, toggle: 2.89};
