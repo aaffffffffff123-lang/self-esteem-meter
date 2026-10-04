@@ -1247,7 +1247,7 @@ const Q = [
     { l: '나 자신을 사랑한다', s: 1, f: 'yuck', m: ['우와 자존감 진짜 높으시다'] },
     { l: '나 자신을 사랑하지 않는다', s: 0, f: 'sly', m: ['왜인지는 말 안 해도 알겠어'] } ] },
   { t: '나는 대체로 나 자신에게 만족하는 편이다.', c: [
-    { l: '대체로 만족한다', s: 1, f: 'deadpan', m: [{ big: 1, t: '어쩌겠어요 그럼' }] },
+    { l: '대체로 만족한다', s: 1, f: 'deadpan', m: [{ big: 1, t: '달리 어쩌겠어요 그럼' }] },
     { l: '만족하지 않는다', s: 0, f: 'sympathy', m: ['그래야 될 것 같아 보여요'] } ] },
   { t: '거울을 보면 마음에 드는 부분보다 안 드는 부분이 먼저 보인다.', c: [
     { l: '안 드는 부분이 먼저 보인다', s: 0, f: 'sparkle', m: ['오, 진짜? 그럼 마음에 드는 부분은 어딘데? 말해줘, 말해줘', { k: 'aside', t: '(바로 단톡방 열었음)' }] },
@@ -1437,6 +1437,10 @@ const SENDER_COLOR = { '동료 단톡방': '#2FCB9F', '동창 단톡방': '#4DA8
 // ===== 소리 =====
 const SFX = (() => {
   let ctx, master, verb, noiseBuf, on = true, cur = 1;
+  let bgmGain, bgmTimer = 0, bgmStep = 0, bgmStarted = false, bgmWanted = false, bgmActive = false;
+  const BGM_LEVEL = .045;
+  const BGM_NOTES = [659.25, 783.99, 587.33, 523.25, 659.25, 880, 783.99, 587.33];
+  const BGM_GAPS = [5200, 6800, 5800, 7400, 6100, 7000, 5600, 7600];
   const LV = {tap: 2.42, send: 4.75, soft: 11.25, recv: 2.37, q: 2.75, marker: 12.41, hammer: 1.68, minihammer: 2.42, sparkle: 3.8, scribble: 15, peel: 3.28, notify: 1.9, quote: 3.08, badge: 3.35, inhale: 5.31, exhale: 5.45, chapter: 3.2, water: 5.0, mood: 2.63, analyze: 3.9, result: 2.9, boom: 1.38, toggle: 2.89};
   try { on = localStorage.getItem('mc-sound') !== 'off'; } catch (e) {}
   function makeIR(sec, decay) {
@@ -1468,6 +1472,84 @@ const SFX = (() => {
     n.connect(master);
     if (wet > 0) { const w = ctx.createGain(); w.gain.value = wet; n.connect(w); w.connect(verb); }
     return g;
+  }
+  function clearBgmTimer() {
+    if (bgmTimer) { clearTimeout(bgmTimer); bgmTimer = 0; }
+  }
+  function fadeBgmIn() {
+    if (!bgmGain || !ctx) return;
+    const now = ctx.currentTime;
+    bgmGain.gain.cancelScheduledValues(now);
+    bgmGain.gain.setValueAtTime(.0001, now);
+    bgmGain.gain.exponentialRampToValueAtTime(BGM_LEVEL, now + 1.1);
+  }
+  function quietBgm() {
+    clearBgmTimer();
+    bgmActive = false;
+    if (!bgmGain || !ctx) return;
+    const now = ctx.currentTime;
+    bgmGain.gain.cancelScheduledValues(now);
+    bgmGain.gain.setValueAtTime(.0001, now);
+  }
+  function padVoice(group, f, level, drift, type = 'sine') {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    const lfo = ctx.createOscillator(), lg = ctx.createGain();
+    o.type = type; o.frequency.value = f; o.detune.value = drift;
+    g.gain.value = level;
+    lfo.frequency.value = .025 + (Math.abs(drift) % 5) * .004;
+    lg.gain.value = level * .18;
+    lfo.connect(lg); lg.connect(g.gain);
+    o.connect(g); g.connect(group);
+    o.start(); lfo.start();
+  }
+  function playBgmKey() {
+    if (!ctx || !bgmGain || ctx.state !== 'running' || !on || document.hidden) return;
+    const t0 = ctx.currentTime + .02, f = BGM_NOTES[bgmStep];
+    const main = ctx.createOscillator(), shimmer = ctx.createOscillator();
+    const mix = ctx.createGain(), sg = ctx.createGain(), g = ctx.createGain();
+    main.type = 'sine'; main.frequency.value = f;
+    shimmer.type = 'triangle'; shimmer.frequency.value = f * 2;
+    mix.gain.value = 1; sg.gain.value = .12;
+    g.gain.setValueAtTime(.0001, t0);
+    g.gain.exponentialRampToValueAtTime(.17, t0 + .035);
+    g.gain.exponentialRampToValueAtTime(.0001, t0 + 3.8);
+    main.connect(mix); shimmer.connect(sg); sg.connect(mix); mix.connect(g); g.connect(bgmGain);
+    main.start(t0); shimmer.start(t0); main.stop(t0 + 3.9); shimmer.stop(t0 + 3.9);
+    bgmStep = (bgmStep + 1) % BGM_NOTES.length;
+  }
+  function queueBgmKey(delay = 2200) {
+    clearBgmTimer();
+    if (!bgmWanted || !on || document.hidden || !ctx) return;
+    bgmTimer = setTimeout(() => {
+      bgmTimer = 0;
+      if (!bgmWanted || !on || document.hidden || !ctx) return;
+      if (ctx.state !== 'running') { bgmActive = false; return; }
+      playBgmKey();
+      queueBgmKey(BGM_GAPS[(bgmStep + BGM_GAPS.length - 1) % BGM_GAPS.length]);
+    }, delay);
+  }
+  function buildBgm() {
+    if (bgmStarted || !ctx) return;
+    bgmStarted = true;
+    bgmGain = ctx.createGain(); bgmGain.gain.value = .0001; bgmGain.connect(bus(0, .18));
+
+    const cMaj = ctx.createGain(), aMin = ctx.createGain();
+    cMaj.gain.value = .55; aMin.gain.value = .45;
+    cMaj.connect(bgmGain); aMin.connect(bgmGain);
+
+    const drift = ctx.createOscillator(), toC = ctx.createGain(), toA = ctx.createGain();
+    drift.frequency.value = 1 / 48;
+    toC.gain.value = .22; toA.gain.value = -.22;
+    drift.connect(toC); drift.connect(toA); toC.connect(cMaj.gain); toA.connect(aMin.gain); drift.start();
+
+    [[130.81, .13, -4], [196, .11, 3], [246.94, .09, -2], [293.66, .075, 4]].forEach(v => padVoice(cMaj, ...v));
+    [[110, .13, 4], [164.81, .11, -3], [196, .09, 2], [246.94, .075, -4]].forEach(v => padVoice(aMin, ...v));
+  }
+  function ensureBgm() {
+    if (!bgmWanted || !on || document.hidden || !init()) return;
+    if (bgmActive) return;
+    bgmActive = true;
+    buildBgm(); fadeBgmIn(); queueBgmKey();
   }
   function env(g, t0, a, vol, dur) {
     vol *= cur;
@@ -1558,9 +1640,28 @@ const SFX = (() => {
   };
   return {
     get on() { return on; },
-    set(v) { on = v; try { localStorage.setItem('mc-sound', v ? 'on' : 'off'); } catch (e) {} if (!v && ctx) ctx.suspend().catch(() => {}); if (v && ctx) ctx.resume().catch(() => {}); },
-    play(name) { if (!init()) return; try { cur = LV[name] || 1; P[name] && P[name](); } catch (e) {} finally { cur = 1; } },
-    unlock() { init(); }
+    set(v) {
+      on = v;
+      try { localStorage.setItem('mc-sound', v ? 'on' : 'off'); } catch (e) {}
+      if (!v && ctx) { quietBgm(); ctx.suspend().catch(() => {}); }
+      if (v) {
+        init();
+        if (ctx) ctx.resume().then(() => { if (bgmWanted) ensureBgm(); }).catch(() => {});
+      }
+    },
+    play(name) {
+      if (document.hidden || !init()) return;
+      if (bgmWanted) ensureBgm();
+      try { cur = LV[name] || 1; P[name] && P[name](); } catch (e) {} finally { cur = 1; }
+    },
+    unlock() { init(); },
+    startBgm() { bgmWanted = true; ensureBgm(); },
+    armBgm() { bgmWanted = true; },
+    visibility(hidden) {
+      if (!ctx) return;
+      if (hidden) { quietBgm(); ctx.suspend().catch(() => {}); }
+      else if (on) ctx.resume().then(() => { if (bgmWanted) ensureBgm(); }).catch(() => {});
+    }
   };
 })();
 const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
@@ -1576,6 +1677,7 @@ document.addEventListener('click', e => {
   const b = e.target.closest('.sound-btn'); if (!b) return;
   SFX.set(!SFX.on); drawSoundButtons(); if (SFX.on) SFX.play('toggle');
 });
+document.addEventListener('visibilitychange', () => SFX.visibility(document.hidden));
 
 // ===== 서식 =====
 const MARK = /\[([hswxb]+):([^\]]*)\]/g;
@@ -1652,6 +1754,7 @@ function restoreResult() {
     S.answers = r.answers.slice(); S.care = Object.assign(emptyCare(), r.care || {});
     S.result = r; S.imgBlob = null; S.busy = false;
     adoptLog(d.log);
+    SFX.armBgm();
     renderResult(r, { quiet: true });
     return true;
   } catch (e) {
@@ -1688,7 +1791,8 @@ function restoreSession() {
     S.peer = d.peer && Array.isArray(d.peer.answers) ? d.peer : null;
     S.care = Object.assign(emptyCare(), d.care || {});
     S.busy = false; S.result = null; S.imgBlob = null;
-     adoptLog(d.log);
+    adoptLog(d.log);
+    SFX.armBgm();
     show('chat'); updateProgress(S.i); showChoices(S.i);
     requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
     return true;
@@ -2208,12 +2312,13 @@ $('#ob-back').addEventListener('click', () => {
   if (OB.step === 1) { readNick(); show('welcome'); }
   else obRender(OB.step - 1, -1);
 });
-$('#go-start').addEventListener('click', () => { SFX.unlock(); SFX.play('tap'); show('onboard'); obRender(1); });
+$('#go-start').addEventListener('click', () => { SFX.unlock(); SFX.play('tap'); SFX.startBgm(); show('onboard'); obRender(1); });
 
 // ===== 시작 =====
 async function start() {
   if (!$('#chat').hidden) return;
   SFX.unlock();
+  SFX.startBgm();
   clearSession();
   S.answers = []; S.result = null; S.imgBlob = null; S.busy = false; S.i = 0; S.care = emptyCare();
   $('#chat').classList.remove('review');
