@@ -1072,7 +1072,8 @@ const FACES = {
   bonk:    { eyes: { closed: 'squeeze' }, brows: 'down', mouth: 'wide' }
 };
 function face2(id, kind, over = {}) {
-  const f = FACES[kind] || FACES.smile;
+  const resolved = kind === 'deadpan' || kind === 'flat' ? 'smile' : kind;
+  const f = FACES[resolved] || FACES.smile;
   const eo = Object.assign({}, f.eyes, over.eyes || {});
   let s = (f.blush ? blush2 : '') + eye2(id, 1, EL, eo) + eye2(id, 2, ER, eo) + brows(over.brows || f.brows) + mouth2(over.mouth || f.mouth);
   if (f.extra === 'spark') s += spark2(64, 66, 7) + spark2(138, 60, 5.5);
@@ -1201,14 +1202,14 @@ const oniSVG = oni2;
 let _mf = 0;
 function moodFace(kind, size = 48) {
   const id = 'mf' + (++_mf);
-  const c = { great: ['#FFE68A', '#FFC23D'], good: ['#B8F2DF', '#46CFA4'], meh: ['#E3D8FF', '#A98CFF'], sad: ['#CBE8FF', '#6DB8F5'], mad: ['#FFC2C2', '#FF6B6B'] }[kind];
+  const c = { mad: ['#C9DDFF', '#7193D3'], sad: ['#D8E5F8', '#8DA6CE'], meh: ['#E4E7EE', '#AEB7C8'], good: ['#DDF3EA', '#7FC7AC'], great: ['#FFE68A', '#FFC23D'] }[kind];
   const S = (w = 2.8) => `fill="none" stroke="${INK}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"`;
   let f = '';
   if (kind === 'great') f = `<path d="M15 23 Q19 17 23 23" ${S()}/><path d="M29 23 Q33 17 37 23" ${S()}/><path d="M17 29 Q26 40 35 29Z" fill="${INK}"/><path d="M21 33 Q26 37 31 33 Q26 31 21 33Z" fill="#FF8AA2"/>`;
-  if (kind === 'good') f = `<circle cx="19" cy="22" r="3" fill="${INK}"/><circle cx="33" cy="22" r="3" fill="${INK}"/><path d="M19 30 Q26 36 33 30" ${S()}/>`;
-  if (kind === 'meh') f = `<circle cx="19" cy="23" r="3" fill="${INK}"/><circle cx="33" cy="23" r="3" fill="${INK}"/><path d="M19 32 H33" ${S()}/>`;
-  if (kind === 'sad') f = `<path d="M14 18 L22 15 M38 18 L30 15" ${S(2.4)}/><circle cx="19" cy="23" r="3" fill="${INK}"/><circle cx="33" cy="23" r="3" fill="${INK}"/><path d="M19 34 Q26 28 33 34" ${S()}/><path d="M16 27 q-3 6 0 8 q3 -2 0 -8z" fill="#8FD0FF"/>`;
-  if (kind === 'mad') f = `<path d="M14 15 L23 19 M38 15 L29 19" ${S()}/><circle cx="19" cy="24" r="3" fill="${INK}"/><circle cx="33" cy="24" r="3" fill="${INK}"/><path d="M19 34 Q26 29 33 34" ${S()}/>`;
+  if (kind === 'good') f = `<circle cx="19" cy="23" r="3" fill="${INK}"/><circle cx="33" cy="23" r="3" fill="${INK}"/><path d="M20 31 Q26 35 32 31" ${S(2.5)}/>`;
+  if (kind === 'meh') f = `<path d="M15 19 H23 M29 19 H37" ${S(2.2)}/><circle cx="19" cy="25" r="2.7" fill="${INK}"/><circle cx="33" cy="25" r="2.7" fill="${INK}"/><path d="M15 23 H23 M29 23 H37" ${S(2.2)}/><path d="M20 34 Q26 32 32 34" ${S(2.5)}/>`;
+  if (kind === 'sad') f = `<path d="M14 18 L22 15 M38 18 L30 15" ${S(2.4)}/><circle cx="19" cy="25" r="3" fill="${INK}"/><circle cx="33" cy="25" r="3" fill="${INK}"/><path d="M15 29 Q19 31 23 29 M29 29 Q33 31 37 29" ${S(1.8)} opacity=".45"/><path d="M19 36 Q26 30 33 36" ${S()}/>`;
+  if (kind === 'mad') f = `<path d="M14 18 L22 14 M38 18 L30 14" ${S(2.4)}/><path d="M15 23 Q19 28 23 23 M29 23 Q33 28 37 23" ${S()}/><path d="M18 27 C15 32 15 38 18 42 M34 27 C37 32 37 38 34 42" fill="none" stroke="#75C5FF" stroke-width="4.2" stroke-linecap="round"/><path d="M19 37 Q26 28 33 37 Q26 44 19 37Z" fill="${INK}"/><path d="M22 39 Q26 42 30 39" fill="none" stroke="#FF8AA2" stroke-width="2.4" stroke-linecap="round"/>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" width="${size}" height="${size}" aria-hidden="true"><defs><radialGradient id="${id}" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></radialGradient></defs><circle cx="26" cy="27.5" r="22" fill="${INK}" opacity=".12"/><circle cx="26" cy="26" r="22" fill="url(#${id})"/><ellipse cx="18" cy="14" rx="6" ry="3.4" fill="#fff" opacity=".6" transform="rotate(-30 18 14)"/>${f}</svg>`;
 }
 function faviconSVG() {
@@ -1324,8 +1325,8 @@ const CHAPTERS = [
   { from: 0, to: 5, title: '내 가치와 자격', rest: 0 },
   { from: 6, to: 10, title: '나를 받아들이는 마음', rest: 1 },
   { from: 11, to: 19, title: '남의 평가와 비교', rest: 2 },
-  { from: 20, to: 24, title: '표현과 경계' },
-  { from: 25, to: 27, title: '실수와 회복', rest: 3 },
+  { from: 20, to: 24, title: '표현과 경계', rest: 3 },
+  { from: 25, to: 27, title: '실수와 회복' },
   { from: 28, to: 31, title: '나와 세상' }
 ];
 
@@ -1438,10 +1439,10 @@ const SENDER_COLOR = { '동료 단톡방': '#2FCB9F', '동창 단톡방': '#4DA8
 const SFX = (() => {
   let ctx, master, verb, noiseBuf, on = true, cur = 1;
   let bgmGain, bgmTimer = 0, bgmStep = 0, bgmStarted = false, bgmWanted = false, bgmActive = false;
-  const BGM_LEVEL = .045;
+  const BGM_LEVEL = .1;
   const BGM_NOTES = [659.25, 783.99, 587.33, 523.25, 659.25, 880, 783.99, 587.33];
   const BGM_GAPS = [5200, 6800, 5800, 7400, 6100, 7000, 5600, 7600];
-  const LV = {tap: 2.42, send: 4.75, soft: 11.25, recv: 2.37, q: 2.75, marker: 12.41, hammer: 1.68, minihammer: 2.42, sparkle: 3.8, scribble: 15, peel: 3.28, notify: 1.9, quote: 3.08, badge: 3.35, inhale: 5.31, exhale: 5.45, chapter: 3.2, water: 5.0, mood: 2.63, analyze: 3.9, result: 2.9, boom: 1.38, toggle: 2.89};
+  const LV = {tap: 2.42, send: 4.75, soft: 11.25, recv: 2.37, q: 2.75, marker: 12.41, hammer: 1.68, minihammer: 2.42, sparkle: 3.8, scribble: 15, peel: 3.28, notify: 1.9, quote: 3.08, badge: 3.35, inhale: 5.31, exhale: 5.45, pant: 1.9, chapter: 3.2, water: 5.0, mood: 2.63, analyze: 3.9, result: 2.9, boom: 1.38, toggle: 2.89};
   try { on = localStorage.getItem('mc-sound') !== 'off'; } catch (e) {}
   function makeIR(sec, decay) {
     const len = Math.floor(ctx.sampleRate * sec), b = ctx.createBuffer(2, len, ctx.sampleRate);
@@ -1621,6 +1622,16 @@ const SFX = (() => {
     },
     inhale() { noise({ dur: 2.6, vol: .08, type: 'lowpass', f: 300, f2: 1500, a: 1.5, wet: .5 }); tone({ f: 262, f2: 330, dur: 2.6, vol: .04, a: 1.4, wet: .6 }); },
     exhale() { noise({ dur: 2.6, vol: .07, type: 'lowpass', f: 1500, f2: 250, a: .12, wet: .5 }); tone({ f: 330, f2: 220, dur: 2.6, vol: .035, a: .2, wet: .6 }); },
+    pant() {
+      for (let i = 0; i < 10; i++) {
+        const t = i * .15, inhale = i % 2 === 0, j = (i % 3) * 90;
+        noise(inhale
+          ? { t, dur: .11, vol: .052, type: 'bandpass', f: 850 + j, f2: 3300 + j, q: 1.8, a: .018 }
+          : { t, dur: .125, vol: .064, type: 'bandpass', f: 2100 + j, f2: 520, q: .9, a: .006 }
+        );
+        if (!inhale) tone({ t: t + .012, f: 170, f2: 118, type: 'triangle', dur: .09, vol: .012, a: .006 });
+      }
+    },
     chapter() { [1047, 1319, 1568].forEach((f, i) => bell({ t: i * .09, f, dur: 1.2, vol: .06, wet: .6 })); },
     water() { for (let i = 0; i < 6; i++) tone({ t: i * .07, f: 500 + i * 90, f2: 900 + i * 120, dur: .06, vol: .08 }); },
     mood() { tone({ f: 660, f2: 990, dur: .09, vol: .14 }); bell({ t: .06, f: 1568, dur: .5, vol: .05 }); },
@@ -1697,8 +1708,8 @@ function rich(str) {
 const flags = str => { const f = new Set(); String(str).replace(MARK, (_, a) => { [...a].forEach(x => { if (x !== 'h') f.add(x); }); return ''; }); return f; };
 
 // ===== 상태 =====
-const MOODS = [['great', '아주 좋아요'], ['good', '괜찮아요'], ['meh', '그저 그래요'], ['sad', '슬퍼요'], ['mad', '화나요']];
-const MOOD_VALUE = { great: 2, good: 1, meh: 0, sad: -1, mad: -1 };
+const MOODS = [['mad', '너무 힘들어요'], ['sad', '우울해요'], ['meh', '가라앉아 있어요'], ['good', '괜찮아요'], ['great', '아주 좋아요']];
+const MOOD_VALUE = { mad: -2, sad: -1, meh: 0, good: 1, great: 2 };
 const TENSIONS = [['jaw', '턱'], ['shoulder', '어깨'], ['belly', '배'], ['hand', '손'], ['unknown', '잘 모르겠어요']];
 const GROUND_COLORS = [['pink', '분홍', '#FF8FB5'], ['yellow', '노랑', '#FFD84D'], ['green', '초록', '#55D6A8'], ['blue', '파랑', '#63B7FF'], ['purple', '보라', '#A98CFF']];
 const THOUGHT_PATTERNS = [
@@ -1869,6 +1880,26 @@ async function breathPhase(circle, label, phase, seconds, from, to, sound) {
     { duration: RM.matches ? 1 : seconds * 1000, easing: 'ease-in-out', fill: 'forwards' }
   );
   await Promise.all([anim.finished.catch(() => {}), realWait(seconds * 1000)]);
+}
+
+async function breathScramble(circle, label) {
+  if (RM.matches) return;
+  SFX.play('pant');
+  circle.getAnimations().forEach(anim => anim.cancel());
+  let from = .55;
+  circle.style.transform = 'scale(.55)';
+  for (let i = 0; i < 10; i++) {
+    const to = from === .55 ? 1 : .55;
+    label.textContent = to === 1 ? '들이쉬기' : '내쉬기';
+    const anim = circle.animate(
+      [{ transform: `scale(${from})` }, { transform: `scale(${to})` }],
+      { duration: 150, easing: 'linear', fill: 'forwards' }
+    );
+    await Promise.all([anim.finished.catch(() => {}), realWait(150)]);
+    circle.style.transform = `scale(${to})`;
+    anim.cancel();
+    from = to;
+  }
 }
 
 async function bodyCheck() {
@@ -2128,7 +2159,6 @@ async function choose(pos, btn) {
     await say({ k: 'badge', name: '자기 자신에게 관심 존나 있음' });
     S.care.badge = true; endGroup();
   }
-  if (i === 24 && !S.care.grounded) await groundingCheck();
   const chEnd = CHAPTERS.findIndex(ch => ch.to === i);
   if (i === Q.length - 1) return go('결과 볼게요', finish);
   if (chEnd >= 0 && Number.isInteger(CHAPTERS[chEnd].rest)) await breakTime(CHAPTERS[chEnd].rest, i + 1);
@@ -2191,6 +2221,7 @@ async function breakTime(n, doneCount) {
     await breathPhase(circle, label, '들이쉬기', 4, .55, 1, 'inhale');
     await breathPhase(circle, label, '멈추기', 2, 1, 1);
     await breathPhase(circle, label, '내쉬기', 6, 1, .55, 'exhale');
+    await breathScramble(circle, label);
     S.care.breathed = true;
     label.textContent = '완료';
     card.querySelector('.b-phase').textContent = '호흡 완료';
@@ -2218,7 +2249,7 @@ async function breakTime(n, doneCount) {
   }
   if (n === 3) {
     endGroup(); await wait(300);
-    const el = notifyEl({ app: true, from: '에스팀랩', lines: ['수분 섭취 알림', '물 한 잔 마실 시간이에요.'] });
+    const el = notifyEl({ app: true, from: '에스팀랩', lines: ['수분 섭취 알림', '콜라 한 잔 마실 시간이에요.'] });
     el.querySelector('p').style.fontWeight = '800';
     log.append(el); scrollEnd(); SFX.play('notify');
     await wait(600);
@@ -2241,7 +2272,7 @@ async function breakTime(n, doneCount) {
       await say({ t: '넴', f: 'deadpan' });
     }
     endGroup();
-    return new Promise(res => go('마지막 장 할게요', res));
+    return new Promise(res => go('다음', res));
   }
 }
 
